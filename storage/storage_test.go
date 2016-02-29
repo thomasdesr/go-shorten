@@ -28,14 +28,13 @@ func saveSomething(s storage.Storage) (short string, long string, err error) {
 	named, namedOk := s.(storage.NamedStorage)
 
 	short = randString(10)
-	long = randString(20)
+	long = "http://" + randString(20) + ".com"
 
-	if unnamedOk {
-
-		short, err := unnamed.Save(long)
-		return short, long, err
-	} else if namedOk {
+	if namedOk {
 		err := named.SaveName(short, long)
+		return short, long, err
+	} else if unnamedOk {
+		short, err := unnamed.Save(long)
 		return short, long, err
 	} else {
 		return "", "", fmt.Errorf("Storage isn't named or unnamed, can't save anything")
@@ -101,7 +100,7 @@ func TestMissingLoad(t *testing.T) {
 		long, err := setupStorage(t).Load(testCode)
 		t.Logf("[%s] storage.Load(\"%s\") -> %#v, %#v", name, testCode, long, err)
 		assert.NotNil(t, err, name)
-		assert.Equal(t, err, storage.ErrCodeNotSet, name)
+		assert.Equal(t, err, storage.ErrShortNotSet, name)
 	}
 }
 
@@ -124,7 +123,7 @@ func TestLoad(t *testing.T) {
 func TestNamedStorageNames(t *testing.T) {
 	var shortNames map[string]error = map[string]error{
 		"simple":                               nil,
-		"":                                     storage.ErrNameEmpty,
+		"":                                     storage.ErrShortEmpty,
 		"1;DROP TABLE names":                   nil, // A few SQL Injections
 		"';DROP TABLE names":                   nil,
 		"œ∑´®†¥¨ˆøπ“‘":                         nil, // Fancy Unicode
