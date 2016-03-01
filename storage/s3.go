@@ -12,6 +12,10 @@ import (
 	"github.com/mitchellh/goamz/s3"
 )
 
+func init() {
+	SupportedStorageTypes["S3"] = new(interface{})
+}
+
 type S3 struct {
 	Bucket         *s3.Bucket
 	hashFunc       func(string) string

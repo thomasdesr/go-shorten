@@ -9,6 +9,10 @@ import (
 	"sync"
 )
 
+func init() {
+	SupportedStorageTypes["Filesystem"] = new(interface{})
+}
+
 type Filesystem struct {
 	Root string
 	c    uint64

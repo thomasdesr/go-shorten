@@ -27,6 +27,8 @@ type NamedStorage interface {
 	SaveName(short string, url string) error
 }
 
+var SupportedStorageTypes = make(map[string]interface{})
+
 var (
 	ErrURLEmpty   = errors.New("provided URL is of zero length")
 	ErrShortEmpty = errors.New("provided short name is of zero length")

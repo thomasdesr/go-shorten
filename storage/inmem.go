@@ -2,6 +2,10 @@ package storage
 
 import "sync"
 
+func init() {
+	SupportedStorageTypes["Inmem"] = new(interface{})
+}
+
 type Inmem struct {
 	RandLength int
 
@@ -9,9 +13,9 @@ type Inmem struct {
 	mu sync.RWMutex
 }
 
-func NewInmem() (*Inmem, error) {
+func NewInmem(randLength int) (*Inmem, error) {
 	s := &Inmem{
-		RandLength: 8,
+		RandLength: randLength,
 
 		m: make(map[string]string),
 	}
@@ -29,7 +33,7 @@ func (s *Inmem) Save(url string) (string, error) {
 	defer s.mu.Unlock()
 
 	for i := 0; i < 10; i++ {
-		code = getRandomString(8)
+		code = getRandomString(s.RandLength)
 
 		if _, ok := s.m[code]; !ok {
 			s.m[code] = url
