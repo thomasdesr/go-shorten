@@ -15,6 +15,14 @@
     form.addEventListener("submit", handleFormSubmit);
 
     form.addEventListener("keypress", onFormChange);
+
+    var hash = window.location.hash;
+    var code = hash.substring(1, hash.length);
+
+    if (code) {
+      document.getElementById('code').value = code;
+      document.getElementById('error-message').classList.add('visible');
+    }
   };
 
   /**
