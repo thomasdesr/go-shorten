@@ -50,8 +50,7 @@ func GetShortHandler(store storage.Storage) httprouter.Handle {
 
 		url, err := store.Load(short)
 		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintln(w, "URL Not Found.")
+			http.Redirect(w, r, "/#"+short, http.StatusFound)
 			return
 		}
 

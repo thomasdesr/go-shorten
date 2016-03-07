@@ -23,6 +23,28 @@ body, input {
 	min-width: 128px;
 }
 
+.alert {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+
+	float: left;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	text-align: center;
+
+	display: none;
+}
+
+.alert.visible {
+	display: block;
+}
+
 #code:active,
 #code:focus,
 #url:focus,
