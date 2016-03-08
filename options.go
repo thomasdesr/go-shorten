@@ -2,66 +2,81 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
+	"github.com/mitchellh/goamz/aws"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 type Options struct {
-	BindHost string `json:"bind_host" flag:"host" cfg:"bind_host" env:"HOST"`
-	BindPort string `json:"bind_port" flag:"port" cfg:"bind_port" env:"PORT"`
+	BindHost string `long:"host"    default:"0.0.0.0"   env:"HOST"`
+	BindPort string `long:"port"    default:"8080"      env:"PORT"`
 
-	StorageType   string `json:"storage_type" flag:"storage-type" cfg:"storage_type"`
-	StorageConfig string `flag:"storage-config" cfg:"storage_config"`
+	StorageType string `long:"storage-type" default:"Inmem" ini-name:"storage_type" env:"STORAGE_TYPE"`
+	// StorageConfig string `long:"storage-config" ini-name:"storage_config"`
 
 	// S3 Config options
-	BucketName string `json:"s3_bucket" flag:"s3-bucket" cfg:"s3_bucket`
-	Region     string `json:"s3_region" flag:"s3-region" cfg:"s3_region`
-	AccessKey  string `json:"aws_access_key,omitempty" cfg:"aws_access_key"`
-	SecretKey  string `json:"aws_secret_key,omitempty" cfg:"aws_secret_key"`
+	S3 struct {
+		BucketName string `long:"s3-bucket" default:"go-shorten"    env:"S3_BUCKET"`
+		Region     string `long:"s3-region" default:"us-west-2"     env:"S3_REGION"`
+		AccessKey  string `                                         env:"AWS_ACCESS_KEY"`
+		SecretKey  string `                                         env:"AWS_SECRET_KEY"`
+	} `group:"S3 Storage Options"`
 
 	// Inmem Config options
-	InmemRandLength int `json:"inmem-length" flag:"inmem-length" cfg:"inmem-length"`
+	Inmem struct {
+		RandLength int `long:"inmem-length" default:"8" env:"INMEM_LENGTH"`
+	} `group:"Inmem Storage Options"`
 
 	// Filesystem Config options
-	FilesystemRoot string `json:"filesystem-root", flag:"filesystem-root" cfg:"filesystem-root"`
+	Filesystem struct {
+		RootPath string `long:"root-path" default:"./url-storage" env:"ROOT_PATH"`
+	} `group:"Filesystem Storage Options"`
 }
 
-func NewOptions() *Options {
-	return &Options{
-		StorageType:     "Inmem",
-		InmemRandLength: 8,
-	}
-}
-
-func (o *Options) Validate() error {
-	msgs := make([]string, 0)
-
-	if _, ok := storage.SupportedStorageTypes[o.StorageType]; !ok {
-		msgs = append(msgs, fmt.Sprintf("invalid setting: storage type '%s' is not one of the supported storage types: %v", o.StorageType, storage.SupportedStorageTypes))
-	}
-
-	switch o.StorageType {
+// createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
+func createStorageFromOption(opts *Options) (storage.Storage, error) {
+	switch opts.StorageType {
 	case "Inmem":
-		if o.InmemRandLength <= 0 {
-			msgs = append(msgs, fmt.Sprintf("invalid setting: inmem-length is less than or equal to zero: '%d'", o.InmemRandLength))
-		}
-	case "S3":
-		if o.BucketName == "" {
-			msgs = append(msgs, "missing setting: s3-bucket")
-		}
-		if o.Region == "" {
-			msgs = append(msgs, "missing setting: s3-region")
-		}
-	case "Filesystem":
-		if o.FilesystemRoot == "" {
-			msgs = append(msgs, "missing setting: filesystem-root")
-		}
-	}
+		log.Printf("Setting up an Inmem Storage layer with short code length of '%d'", opts.Inmem.RandLength)
 
-	if len(msgs) != 0 {
-		return fmt.Errorf("Invalid configuration:\n  %s",
-			strings.Join(msgs, "\n  "))
+		return storage.NewInmem(opts.Inmem.RandLength)
+	case "S3":
+		log.Println("Setting up an S3 Storage layer")
+		log.Printf("Connecting to AWS Region '%s' for bucket '%s'", opts.S3.Region, opts.S3.BucketName)
+
+		region, ok := aws.Regions[opts.S3.Region]
+		if !ok {
+			log.Fatalf("Unable to find a region that matches '%s'", opts.S3.Region)
+		}
+
+		if len(opts.S3.BucketName) == 0 {
+			log.Fatalf("BucketName has be something (currently has zero length)")
+		}
+
+		auth, err := aws.GetAuth(opts.S3.AccessKey, opts.S3.SecretKey)
+		if err != nil {
+			akl := len(opts.S3.AccessKey)
+			skl := len(opts.S3.SecretKey)
+			log.Printf("Credential lengths: accessKey(%v) secretKey(%v)", akl, skl)
+			log.Fatalf("Unable to find valid auth credentials because: %v", err)
+		}
+
+		return storage.NewS3(auth, region, opts.S3.BucketName)
+	case "Filesystem":
+		log.Println("Setting up a Filesystem storag layer with root: %v", opts.Filesystem.RootPath)
+
+		return storage.NewFilesystem(opts.Filesystem.RootPath)
+	default:
+		validTypes := make([]string, len(storage.SupportedStorageTypes))
+
+		i := 0
+		for k := range storage.SupportedStorageTypes {
+			validTypes[i] = k
+			i++
+		}
+
+		return nil, fmt.Errorf("Unsupported storage-type: '%s', valid ones are: '%v'", opts.StorageType, strings.Join(validTypes, "', '"))
 	}
-	return nil
 }
