@@ -1,5 +1,5 @@
 [![GoDoc](https://godoc.org/github.com/thomaso-mirodin/go-shorten?status.svg)](http://godoc.org/github.com/thomaso-mirodin/go-shorten)
-[![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/didip/shawty/master/LICENSE)
+[![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/thomaso-mirodin/go-shorten/master/LICENSE)
 
 ## go-shorten: URL Shortener Service
 
