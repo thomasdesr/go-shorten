@@ -3,7 +3,7 @@ package storage_test
 import (
 	"testing"
 
-	"github.com/mitchellh/goamz/aws"
+	"github.com/goamz/goamz/aws"
 	"github.com/stretchr/testify/require"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )

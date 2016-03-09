@@ -8,8 +8,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/mitchellh/goamz/aws"
-	"github.com/mitchellh/goamz/s3"
+	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/s3"
 )
 
 func init() {
@@ -48,6 +48,7 @@ func (s *S3) saveKey(short, url string) (err error) {
 		[]byte(url),
 		"text/plain",
 		s3.BucketOwnerFull,
+		s3.Options{},
 	)
 	if err != nil {
 		return err
@@ -71,6 +72,7 @@ func (s *S3) saveKey(short, url string) (err error) {
 		changeLog,
 		"application/json",
 		s3.BucketOwnerFull,
+		s3.Options{},
 	)
 	if err != nil {
 		return fmt.Errorf("unable to save change history: %v", err)
@@ -84,17 +86,12 @@ func (s *S3) Save(url string) (string, error) {
 		return "", err
 	}
 
-	var (
-		short string
-		err   error
-	)
-
 	for i := 0; i < 10; i++ {
-		short = getRandomString(8)
+		short := getRandomString(8)
 		pathToShort := path.Join(s.storageVersion, s.hashFunc(short))
 		// pathToShort := path.Join(s.storageVersion, s.hashFunc(short), "long")
 
-		if _, err = s.Bucket.GetKey(pathToShort); err != nil {
+		if exists, err := s.Bucket.Exists(pathToShort); !exists && err == nil {
 			return short, s.saveKey(short, url)
 		}
 	}
