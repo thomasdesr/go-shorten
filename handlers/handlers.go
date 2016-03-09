@@ -50,6 +50,7 @@ func GetShortHandler(store storage.Storage) httprouter.Handle {
 
 		url, err := store.Load(short)
 		if err != nil {
+			// TODO(thomaso-mirodin) 2016-03-07: Replace with a templated index.html and go back to a 404 status code
 			http.Redirect(w, r, "/#"+short, http.StatusFound)
 			return
 		}
