@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/mitchellh/goamz/s3"
+	"github.com/goamz/goamz/s3"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 

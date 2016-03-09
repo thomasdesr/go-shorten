@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
-	"github.com/mitchellh/goamz/aws"
+	"github.com/goamz/goamz/aws"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -55,7 +56,7 @@ func createStorageFromOption(opts *Options) (storage.Storage, error) {
 			log.Fatalf("BucketName has be something (currently has zero length)")
 		}
 
-		auth, err := aws.GetAuth(opts.S3.AccessKey, opts.S3.SecretKey)
+		auth, err := aws.GetAuth(opts.S3.AccessKey, opts.S3.SecretKey, "", time.Time{})
 		if err != nil {
 			akl := len(opts.S3.AccessKey)
 			skl := len(opts.S3.SecretKey)
