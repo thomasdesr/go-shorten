@@ -8,7 +8,7 @@ import (
 )
 
 func setupInmemStorage(t testing.TB) storage.Storage {
-	s, err := storage.NewInmem()
+	s, err := storage.NewInmem(8)
 	require.Nil(t, err)
 
 	return s
