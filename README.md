@@ -5,9 +5,9 @@
 
 This service stores and serves URL redirects.
 
-### Can I use it in production?
+### Can I use it in "production"?
 
-I dunno? I will be at some time soon-ish.
+I dunno? I am currently, but do your own tests :D
 
 ### Why?
 
