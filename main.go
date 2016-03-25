@@ -7,12 +7,24 @@ import (
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/negroni"
+	"github.com/guregu/kami"
 	"github.com/jessevdk/go-flags"
-	"github.com/julienschmidt/httprouter"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
+	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 var opts Options
+
+func createRouter(store storage.Storage) *kami.Mux {
+	r := kami.New()
+
+	r.Get("/*short", handlers.GetShortHandler(store))
+	r.Head("/*short", handlers.GetShortHandler(store))
+
+	r.Post("/", handlers.SetShortHandler(store))
+
+	return r
+}
 
 //go:generate rice embed-go -v
 
@@ -32,15 +44,7 @@ func main() {
 		negroni.NewStatic(rice.MustFindBox("static").HTTPBox()),
 	)
 
-	r := httprouter.New()
-
-	r.GET("/*short", handlers.GetShortHandler(store))
-	r.HEAD("/*short", handlers.GetShortHandler(store))
-
-	r.POST("/*short", handlers.SetShortHandler(store))
-	r.PUT("/*short", handlers.SetShortHandler(store))
-
-	n.UseHandler(r)
+	n.UseHandler(createRouter(store))
 
 	err = http.ListenAndServe(net.JoinHostPort(opts.BindHost, opts.BindPort), n)
 	if err != nil {

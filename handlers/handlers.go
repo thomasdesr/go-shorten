@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/guregu/kami"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -41,8 +41,8 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 	return
 }
 
-func GetShortHandler(store storage.Storage) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func GetShortHandler(store storage.Storage) kami.HandlerType {
+	return func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -73,11 +73,11 @@ func GetShortHandler(store storage.Storage) httprouter.Handle {
 	}
 }
 
-func SetShortHandler(store storage.Storage) httprouter.Handle {
+func SetShortHandler(store storage.Storage) kami.HandlerType {
 	named, namedOk := store.(storage.NamedStorage)
 	unnamed, unnamedOk := store.(storage.UnnamedStorage)
 
-	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
