@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/negroni"
 	"github.com/jessevdk/go-flags"
 	"github.com/julienschmidt/httprouter"
@@ -12,6 +13,8 @@ import (
 )
 
 var opts Options
+
+//go:generate rice embed-go -v
 
 func main() {
 	if _, err := flags.Parse(&opts); err != nil {
@@ -23,7 +26,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.NewStatic(http.Dir("static")))
+	n := negroni.New(
+		negroni.NewRecovery(),
+		negroni.NewLogger(),
+		negroni.NewStatic(rice.MustFindBox("static").HTTPBox()),
+	)
 
 	r := httprouter.New()
 
