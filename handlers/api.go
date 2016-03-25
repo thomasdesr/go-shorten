@@ -60,7 +60,7 @@ func GetShortHandler(store storage.Storage) kami.HandlerType {
 			w.WriteHeader(http.StatusNotFound)
 			err := t.Execute(w, templates.IndexParams{
 				Short: short,
-				Error: fmt.Errorf("Unknown short"),
+				Error: fmt.Errorf("The link you specified does not exist. You can create it below."),
 			})
 
 			if err != nil {

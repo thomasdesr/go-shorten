@@ -15,7 +15,7 @@
         <main class="wrapper">
             <section>
                 <div id="error-message" class="alert alert-danger {{if .Error}} visible {{end}}">
-                    The link you specified does not exist. You can create it below.
+                    {{- if .Error}} {{.Error}} {{end -}}
                 </div>
             </section>
             <section class="container create-short">
