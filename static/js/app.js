@@ -15,14 +15,6 @@
     form.addEventListener("submit", handleFormSubmit);
 
     form.addEventListener("keypress", onFormChange);
-
-    var hash = window.location.hash;
-    var code = hash.substring(1, hash.length);
-
-    if (code) {
-      document.getElementById('code').value = code;
-      document.getElementById('error-message').classList.add('visible');
-    }
   };
 
   /**
@@ -58,6 +50,9 @@
    */
   function handleFormSubmit(e) {
     e.preventDefault();
+
+    document.getElementById('error-message').classList.remove("visible");
+
     var code = document.getElementById("code").value.trim();
     var url = document.getElementById("url").value.trim();
 

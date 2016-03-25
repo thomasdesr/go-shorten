@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/guregu/kami"
+	"github.com/thomaso-mirodin/go-shorten/handlers/templates"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -41,8 +42,8 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 	return
 }
 
-func GetShortHandler(store storage.Storage) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func GetShortHandler(store storage.Storage) kami.HandlerType {
+	return func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -50,8 +51,22 @@ func GetShortHandler(store storage.Storage) httprouter.Handle {
 
 		url, err := store.Load(short)
 		if err != nil {
-			// TODO(thomaso-mirodin) 2016-03-07: Replace with a templated index.html and go back to a 404 status code
-			http.Redirect(w, r, "/#"+short, http.StatusFound)
+			t := templates.Root.Lookup("index")
+			if t == nil {
+				http.NotFound(w, r)
+				return
+			}
+
+			w.WriteHeader(http.StatusNotFound)
+			err := t.Execute(w, templates.IndexParams{
+				Short: short,
+				Error: fmt.Errorf("The link you specified does not exist. You can create it below."),
+			})
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+
 			return
 		}
 
@@ -73,11 +88,11 @@ func GetShortHandler(store storage.Storage) httprouter.Handle {
 	}
 }
 
-func SetShortHandler(store storage.Storage) httprouter.Handle {
+func SetShortHandler(store storage.Storage) kami.HandlerType {
 	named, namedOk := store.(storage.NamedStorage)
 	unnamed, unnamedOk := store.(storage.UnnamedStorage)
 
-	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
