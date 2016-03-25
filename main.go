@@ -10,6 +10,7 @@ import (
 	"github.com/guregu/kami"
 	"github.com/jessevdk/go-flags"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
+	"github.com/thomaso-mirodin/go-shorten/handlers/templates"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -18,9 +19,16 @@ var opts Options
 func createRouter(store storage.Storage) *kami.Mux {
 	r := kami.New()
 
-	r.Get("/*short", handlers.GetShortHandler(store))
-	r.Head("/*short", handlers.GetShortHandler(store))
+	box := rice.MustFindBox("static")
 
+	// Serve the static content
+	r.Use("/", handlers.Static(box))
+
+	// Serve the index
+	r.Get("/", templates.Index(box))
+
+	// Serve the "API"
+	r.Get("/*short", handlers.GetShortHandler(store))
 	r.Post("/", handlers.SetShortHandler(store))
 
 	return r
@@ -41,7 +49,6 @@ func main() {
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
-		negroni.NewStatic(rice.MustFindBox("static").HTTPBox()),
 	)
 
 	n.UseHandler(createRouter(store))
