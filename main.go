@@ -46,7 +46,7 @@ func main() {
 	r.Get("/*short", handlers.GetShortHandler(store))
 	r.Post("/", handlers.SetShortHandler(store))
 
-	n.UseHandler()
+	n.UseHandler(r)
 
 	err = http.ListenAndServe(net.JoinHostPort(opts.BindHost, opts.BindPort), n)
 	if err != nil {
