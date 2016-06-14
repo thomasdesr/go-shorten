@@ -35,6 +35,10 @@ func cleanupS3Storage() error {
 	}
 
 	bc, err := s.Bucket.GetBucketContents()
+	if err != nil {
+		return err
+	}
+
 	for k, _ := range *bc {
 		s.Bucket.Del(k)
 	}

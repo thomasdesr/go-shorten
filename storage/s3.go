@@ -54,6 +54,17 @@ func (s *S3) saveKey(short, url string) (err error) {
 		return err
 	}
 
+	err = s.Bucket.Put(
+		path.Join(s.storageVersion, hashedShort, "short"),
+		[]byte(short),
+		"text/plain",
+		s3.BucketOwnerFull,
+		s3.Options{},
+	)
+	if err != nil {
+		return err
+	}
+
 	changeLog, err := json.Marshal(
 		struct {
 			URL  string
@@ -89,7 +100,6 @@ func (s *S3) Save(url string) (string, error) {
 	for i := 0; i < 10; i++ {
 		short := getRandomString(8)
 		pathToShort := path.Join(s.storageVersion, s.hashFunc(short))
-		// pathToShort := path.Join(s.storageVersion, s.hashFunc(short), "long")
 
 		if exists, err := s.Bucket.Exists(pathToShort); !exists && err == nil {
 			return short, s.saveKey(short, url)
