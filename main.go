@@ -27,6 +27,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Println("Storage created:", opts)
+
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
@@ -48,6 +50,7 @@ func main() {
 
 	n.UseHandler(r)
 
+	log.Printf("Starting HTTP Listener on: %s", net.JoinHostPort(opts.BindHost, opts.BindPort))
 	err = http.ListenAndServe(net.JoinHostPort(opts.BindHost, opts.BindPort), n)
 	if err != nil {
 		log.Fatal(err)

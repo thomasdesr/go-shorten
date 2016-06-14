@@ -32,7 +32,7 @@ func NewS3(auth aws.Auth, region aws.Region, bucketName string) (*S3, error) {
 		storageVersion: "v2",
 	}
 
-	_, err := s.Bucket.GetBucketContents()
+	_, err := s.Bucket.List("/", "", "", 1)
 	if s3err, ok := err.(*s3.Error); ok && s3err.Code == "NoSuchBucket" {
 		err = s.Bucket.PutBucket(s3.BucketOwnerFull)
 	}
