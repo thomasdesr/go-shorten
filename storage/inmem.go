@@ -41,7 +41,7 @@ func (s *Inmem) Save(url string) (string, error) {
 		}
 	}
 
-	return "", ErrShortInUse
+	return "", ErrShortExhaustion
 }
 
 func (s *Inmem) SaveName(short string, url string) error {

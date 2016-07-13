@@ -35,8 +35,8 @@ var (
 
 	ErrURLNotAbsolute = errors.New("provided URL is not an absolute URL")
 
-	ErrShortNotSet = errors.New("storage layer doens't have a URL for that short code")
-	ErrShortInUse  = errors.New("tried to set short, but unable to find a unique shortname within 10 tries")
+	ErrShortNotSet     = errors.New("storage layer doens't have a URL for that short code")
+	ErrShortExhaustion = errors.New("tried to set short, but unable to find a unique shortname within 10 tries")
 )
 
 func validateShort(short string) error {

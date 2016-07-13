@@ -106,7 +106,7 @@ func (s *S3) Save(url string) (string, error) {
 		}
 	}
 
-	return "", ErrShortNotSet
+	return "", ErrShortExhaustion
 }
 
 func (s *S3) SaveName(short string, url string) error {
