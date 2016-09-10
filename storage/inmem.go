@@ -44,8 +44,9 @@ func (s *Inmem) Save(url string) (string, error) {
 	return "", ErrShortExhaustion
 }
 
-func (s *Inmem) SaveName(short string, url string) error {
-	if err := validateShort(short); err != nil {
+func (s *Inmem) SaveName(rawShort string, url string) error {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return err
 	}
 	if _, err := validateURL(url); err != nil {
@@ -58,8 +59,9 @@ func (s *Inmem) SaveName(short string, url string) error {
 	return nil
 }
 
-func (s *Inmem) Load(short string) (string, error) {
-	if err := validateShort(short); err != nil {
+func (s *Inmem) Load(rawShort string) (string, error) {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return "", err
 	}
 

@@ -30,7 +30,12 @@ func NewRegexFromList(redirects map[string]string) (*Regex, error) {
 	}, nil
 }
 
-func (r Regex) Load(short string) (string, error) {
+func (r Regex) Load(rawShort string) (string, error) {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
+		return "", err
+	}
+
 	for _, remap := range r.remaps {
 		if remap.Regex.MatchString(short) {
 			return remap.Regex.ReplaceAllString(short, remap.Replacement), nil

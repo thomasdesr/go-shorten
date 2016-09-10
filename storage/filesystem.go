@@ -61,8 +61,9 @@ func FlattenPath(path string, separator string) string {
 	return strings.Replace(path, string(os.PathSeparator), separator, -1)
 }
 
-func (s *Filesystem) SaveName(short, url string) error {
-	if err := validateShort(short); err != nil {
+func (s *Filesystem) SaveName(rawShort, url string) error {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return err
 	}
 	if _, err := validateURL(url); err != nil {
@@ -72,8 +73,8 @@ func (s *Filesystem) SaveName(short, url string) error {
 	short = FlattenPath(CleanPath(short), "_")
 
 	s.mu.Lock()
-	err := ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744)
-	if err == nil {
+
+	if err := ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744); err == nil {
 		s.c++
 	}
 	s.mu.Unlock()
@@ -81,8 +82,9 @@ func (s *Filesystem) SaveName(short, url string) error {
 	return err
 }
 
-func (s *Filesystem) Load(short string) (string, error) {
-	if err := validateShort(short); err != nil {
+func (s *Filesystem) Load(rawShort string) (string, error) {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return "", err
 	}
 

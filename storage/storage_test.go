@@ -93,6 +93,29 @@ func TestNamedStorageSave(t *testing.T) {
 	}
 }
 
+func TestNamedStorageNormalization(t *testing.T) {
+	testCode := "test-named-url"
+	testNormalizedCode := "testnamedurl"
+	testURL := "http://google.com"
+
+	for name, setupStorage := range storageSetups {
+		namedStorage, ok := setupStorage(t).(storage.NamedStorage)
+
+		if assert.True(t, ok, name) {
+			err := namedStorage.SaveName(testCode, testURL)
+			t.Logf("[%s] namedStorage.SaveName(\"%s\", \"%s\") -> %#v", name, testCode, testURL, err)
+			assert.Nil(t, err, name)
+
+			a, err := namedStorage.Load(testCode)
+			assert.Nil(t, err, name)
+			b, err := namedStorage.Load(testNormalizedCode)
+			assert.Nil(t, err, name)
+
+			assert.Equal(t, a, b)
+		}
+	}
+}
+
 func TestMissingLoad(t *testing.T) {
 	testCode := "non-existant-short-string"
 

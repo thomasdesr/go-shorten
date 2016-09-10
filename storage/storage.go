@@ -8,6 +8,7 @@ package storage
 import (
 	"errors"
 	"net/url"
+	"strings"
 )
 
 type Storage interface {
@@ -62,4 +63,16 @@ func validateURL(rawURL string) (*url.URL, error) {
 	}
 
 	return parsedURL, nil
+}
+
+var normalizingReplacer = strings.NewReplacer(
+	" ", "",
+	"-", "",
+	"_", "",
+)
+
+func sanitizeShort(rawShort string) (string, error) {
+	short := normalizingReplacer.Replace(rawShort)
+
+	return short, validateShort(short)
 }

@@ -109,8 +109,9 @@ func (s *S3) Save(url string) (string, error) {
 	return "", ErrShortExhaustion
 }
 
-func (s *S3) SaveName(short string, url string) error {
-	if err := validateShort(short); err != nil {
+func (s *S3) SaveName(rawShort string, url string) error {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return err
 	}
 	if _, err := validateURL(url); err != nil {
@@ -120,8 +121,9 @@ func (s *S3) SaveName(short string, url string) error {
 	return s.saveKey(short, url)
 }
 
-func (s *S3) Load(short string) (string, error) {
-	if err := validateShort(short); err != nil {
+func (s *S3) Load(rawShort string) (string, error) {
+	short, err := sanitizeShort(rawShort)
+	if err != nil {
 		return "", err
 	}
 
