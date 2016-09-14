@@ -69,10 +69,11 @@ var normalizingReplacer = strings.NewReplacer(
 	" ", "",
 	"-", "",
 	"_", "",
+	"/", "",
 )
 
 func sanitizeShort(rawShort string) (string, error) {
-	short := normalizingReplacer.Replace(rawShort)
+	short := normalizingReplacer.Replace(strings.ToLower(rawShort))
 
 	return short, validateShort(short)
 }
