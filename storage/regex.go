@@ -30,11 +30,8 @@ func NewRegexFromList(redirects map[string]string) (*Regex, error) {
 	}, nil
 }
 
-func (r Regex) Load(rawShort string) (string, error) {
-	short, err := sanitizeShort(rawShort)
-	if err != nil {
-		return "", err
-	}
+func (r Regex) Load(short string) (string, error) {
+	// Regex intentionally doesn't do sanitization, each regex can have whatever flexability it wants
 
 	for _, remap := range r.remaps {
 		if remap.Regex.MatchString(short) {
