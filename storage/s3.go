@@ -1,15 +1,19 @@
 package storage
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"path"
+	"strings"
 	"time"
 
-	"github.com/goamz/goamz/aws"
-	"github.com/goamz/goamz/s3"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/pkg/errors"
 )
 
 func init() {
@@ -17,24 +21,33 @@ func init() {
 }
 
 type S3 struct {
-	Bucket         *s3.Bucket
-	hashFunc       func(string) string
+	Client     *s3.S3
+	BucketName string
+
 	storageVersion string
+	hashFunc       func(string) string
 }
 
-func NewS3(auth aws.Auth, region aws.Region, bucketName string) (*S3, error) {
+func NewS3(session *session.Session, bucketName string) (*S3, error) {
+
 	s := &S3{
-		Bucket: s3.New(auth, region).Bucket(bucketName),
+		Client:     s3.New(session),
+		BucketName: bucketName,
+
+		storageVersion: "v2",
 		hashFunc: func(s string) string {
 			h := sha256.Sum256([]byte(s))
 			return hex.EncodeToString(h[:])
 		},
-		storageVersion: "v2",
 	}
 
-	_, err := s.Bucket.List("/", "", "", 1)
-	if s3err, ok := err.(*s3.Error); ok && s3err.Code == "NoSuchBucket" {
-		err = s.Bucket.PutBucket(s3.BucketOwnerFull)
+	_, err := s.Client.HeadBucket(&s3.HeadBucketInput{
+		Bucket: aws.String(s.BucketName),
+	})
+	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NotFound" {
+		_, err = s.Client.CreateBucket(&s3.CreateBucketInput{
+			Bucket: aws.String(s.BucketName),
+		})
 	}
 
 	return s, err
@@ -42,27 +55,26 @@ func NewS3(auth aws.Auth, region aws.Region, bucketName string) (*S3, error) {
 
 func (s *S3) saveKey(short, url string) (err error) {
 	hashedShort := s.hashFunc(short)
+	s3BucketPrefix := path.Join(s.storageVersion, hashedShort)
 
-	err = s.Bucket.Put(
-		path.Join(s.storageVersion, hashedShort, "long"),
-		[]byte(url),
-		"text/plain",
-		s3.BucketOwnerFull,
-		s3.Options{},
-	)
+	_, err = s.Client.PutObject(&s3.PutObjectInput{
+		Bucket:      aws.String(s.BucketName),
+		Key:         aws.String(path.Join(s3BucketPrefix, "long")),
+		Body:        strings.NewReader(url),
+		ContentType: aws.String("text/plain"),
+	})
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to save long url to s3")
 	}
 
-	err = s.Bucket.Put(
-		path.Join(s.storageVersion, hashedShort, "short"),
-		[]byte(short),
-		"text/plain",
-		s3.BucketOwnerFull,
-		s3.Options{},
-	)
+	_, err = s.Client.PutObject(&s3.PutObjectInput{
+		Bucket:      aws.String(s.BucketName),
+		Key:         aws.String(path.Join(s3BucketPrefix, "short")),
+		Body:        strings.NewReader(short),
+		ContentType: aws.String("text/plain"),
+	})
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to save short url to s3")
 	}
 
 	changeLog, err := json.Marshal(
@@ -75,18 +87,22 @@ func (s *S3) saveKey(short, url string) (err error) {
 		},
 	)
 	if err != nil {
-		return fmt.Errorf("unable to format change history: %v", err)
+		return errors.Wrap(err, "unable to format change history")
 	}
 
-	err = s.Bucket.Put(
-		path.Join(s.storageVersion, hashedShort, "change_history", time.Now().Format(time.RFC3339Nano)),
-		changeLog,
-		"application/json",
-		s3.BucketOwnerFull,
-		s3.Options{},
-	)
+	_, err = s.Client.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(s.BucketName),
+		Key: aws.String(
+			path.Join(
+				s3BucketPrefix,
+				"change_history",
+				time.Now().Format(time.RFC3339Nano),
+			)),
+		Body:        bytes.NewReader(changeLog),
+		ContentType: aws.String("application/json"),
+	})
 	if err != nil {
-		return fmt.Errorf("unable to save change history: %v", err)
+		return errors.Wrap(err, "failed to save changelog to s3")
 	}
 
 	return nil
@@ -101,7 +117,11 @@ func (s *S3) Save(url string) (string, error) {
 		short := getRandomString(8)
 		pathToShort := path.Join(s.storageVersion, s.hashFunc(short))
 
-		if exists, err := s.Bucket.Exists(pathToShort); !exists && err == nil {
+		_, err := s.Client.HeadObject(&s3.HeadObjectInput{
+			Bucket: aws.String(s.BucketName),
+			Key:    aws.String(pathToShort),
+		})
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NotFound" {
 			return short, s.saveKey(short, url)
 		}
 	}
@@ -127,9 +147,18 @@ func (s *S3) Load(rawShort string) (string, error) {
 		return "", err
 	}
 
-	url, err := s.Bucket.Get(path.Join(s.storageVersion, s.hashFunc(short), "long"))
-	if s3err, ok := err.(*s3.Error); ok && s3err.Code == "NoSuchKey" {
+	resp, err := s.Client.GetObject(&s3.GetObjectInput{
+		Bucket: aws.String(s.BucketName),
+		Key:    aws.String(path.Join(s.storageVersion, s.hashFunc(short), "long")),
+	})
+	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NoSuchKey" {
 		return "", ErrShortNotSet
 	}
-	return string(url), err
+
+	var bb bytes.Buffer
+	if _, err := bb.ReadFrom(resp.Body); err != nil {
+		return "", errors.Wrap(err, "failed to read long url")
+	}
+
+	return bb.String(), err
 }

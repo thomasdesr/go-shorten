@@ -3,7 +3,10 @@ package storage_test
 import (
 	"testing"
 
-	"github.com/goamz/goamz/aws"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
@@ -11,40 +14,53 @@ import (
 var testBucket string = "go-shortener-test"
 
 func setupS3Storage(t testing.TB) storage.Storage {
-	auth, err := aws.SharedAuth()
+	sess, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
 	if err != nil {
-		auth, err = aws.EnvAuth()
+		t.Fatal(errors.Wrap(err, "failed to create aws session"))
 	}
-	require.Nil(t, err)
 
-	s, err := storage.NewS3(auth, aws.USWest2, testBucket)
-	require.Nil(t, err)
+	s, err := storage.NewS3(sess, testBucket)
+	if err != nil {
+		t.Fatal(errors.Wrap(err, "failed to create storage.S3"))
+	}
 
 	return s
 }
 
 func cleanupS3Storage() error {
-	auth, err := aws.SharedAuth()
+	sess, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create aws session")
 	}
 
-	s, err := storage.NewS3(auth, aws.USWest2, testBucket)
+	s, err := storage.NewS3(sess, testBucket)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create storage.S3")
 	}
 
-	bc, err := s.Bucket.GetBucketContents()
-	if err != nil {
-		return err
+	// List all the objects in the test bucket and delete them
+	if err := s.Client.ListObjectsV2Pages(
+		&s3.ListObjectsV2Input{
+			Bucket: aws.String(s.BucketName),
+		},
+		func(page *s3.ListObjectsV2Output, lastPage bool) (shouldContinue bool) {
+			for _, obj := range page.Contents {
+				s.Client.DeleteObject(&s3.DeleteObjectInput{
+					Bucket: aws.String(s.BucketName),
+					Key:    obj.Key,
+				})
+			}
+
+			return true
+		},
+	); err != nil {
+		return errors.Wrap(err, "failed to list and delete objects in bucket")
 	}
 
-	for k, _ := range *bc {
-		s.Bucket.Del(k)
-	}
-
-	if err := s.Bucket.DelBucket(); err != nil {
-		return err
+	if _, err := s.Client.DeleteBucket(&s3.DeleteBucketInput{
+		Bucket: aws.String(s.BucketName),
+	}); err != nil {
+		return errors.Wrap(err, "failed to delete bucket")
 	}
 
 	return nil
