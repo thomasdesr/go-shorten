@@ -28,10 +28,17 @@ type S3 struct {
 	hashFunc       func(string) string
 }
 
-func NewS3(session *session.Session, bucketName string) (*S3, error) {
+func NewS3(awsSession *session.Session, bucketName string) (*S3, error) {
+	if awsSession == nil {
+		var err error
+		awsSession, err = session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create AWS session")
+		}
+	}
 
 	s := &S3{
-		Client:     s3.New(session),
+		Client:     s3.New(awsSession),
 		BucketName: bucketName,
 
 		storageVersion: "v2",
