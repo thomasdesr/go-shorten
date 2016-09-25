@@ -51,7 +51,7 @@ func createStorageFromOption(opts *Options) (storage.Storage, error) {
 
 		return storage.NewS3(nil, opts.S3.BucketName)
 	case "Filesystem":
-		log.Println("Setting up a Filesystem storag layer with root: %v", opts.Filesystem.RootPath)
+		log.Println("Setting up a Filesystem storage layer with root: %v", opts.Filesystem.RootPath)
 
 		return storage.NewFilesystem(opts.Filesystem.RootPath)
 	case "Regex":
