@@ -2,6 +2,10 @@ package migrations
 
 import "github.com/thomaso-mirodin/go-shorten/storage"
 
+func init() {
+	storage.SupportedStorageTypes["S3v3"] = new(interface{})
+}
+
 // S3v2MigrationStore helps the migration from the v2 version of the store to
 // the v3 version of the store that also stores the original short code
 type S3v2MigrationStore struct {
