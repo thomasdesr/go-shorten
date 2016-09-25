@@ -29,6 +29,10 @@ type Options struct {
 	Filesystem struct {
 		RootPath string `long:"root-path" default:"./url-storage" env:"ROOT_PATH"`
 	} `group:"Filesystem Storage Options"`
+
+	Regex struct {
+		Remaps map[string]string `long:"regex-remap" env:"REGEX_REMAP"`
+	} `group:"Regex Storage Options"`
 }
 
 // createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
@@ -50,6 +54,10 @@ func createStorageFromOption(opts *Options) (storage.Storage, error) {
 		log.Println("Setting up a Filesystem storag layer with root: %v", opts.Filesystem.RootPath)
 
 		return storage.NewFilesystem(opts.Filesystem.RootPath)
+	case "Regex":
+		log.Printf("Setting up a Regex storage with %v remaps", opts.Regex.Remaps)
+
+		return storage.NewRegexFromList(opts.Regex.Remaps)
 	default:
 		validTypes := make([]string, len(storage.SupportedStorageTypes))
 
