@@ -1,6 +1,10 @@
 package storage
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/pkg/errors"
+)
 
 func init() {
 	SupportedStorageTypes["Inmem"] = new(interface{})
@@ -19,6 +23,18 @@ func NewInmem(randLength int) (*Inmem, error) {
 
 		m: make(map[string]string),
 	}
+	return s, nil
+}
+
+func NewInmemFromMap(randLength int, initialShorts map[string]string) (*Inmem, error) {
+	s, _ := NewInmem(randLength)
+
+	for k, v := range initialShorts {
+		if err := s.SaveName(k, v); err != nil {
+			return nil, errors.Wrap(err, "failed to save initial short")
+		}
+	}
+
 	return s, nil
 }
 
