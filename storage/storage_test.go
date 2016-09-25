@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomaso-mirodin/go-shorten/storage/migrations"
 )
 
 func randString(length int) string {
@@ -42,8 +43,11 @@ func saveSomething(s storage.Storage) (short string, long string, err error) {
 }
 
 var storageSetups = map[string]func(testing.TB) storage.Storage{
-	"Inmem":      setupInmemStorage,
-	"S3":         setupS3Storage,
+	"Inmem": setupInmemStorage,
+	"S3":    setupS3Storage,
+	"S3v3Migration": func(t testing.TB) storage.Storage {
+		return &migrations.S3v2MigrationStore{setupS3Storage(t).(*storage.S3)}
+	},
 	"Filesystem": setupFilesystemStorage,
 }
 
