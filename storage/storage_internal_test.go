@@ -22,9 +22,14 @@ func TestSanitizeShort(t *testing.T) {
 	}
 
 	for _, tt := range testTable {
-		result, err := sanitizeShort(tt.in)
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-		require.Equal(t, tt.err, err)
-		require.Equal(t, tt.out, result)
+			result, err := sanitizeShort(tt.in)
+
+			require.Equal(t, tt.err, err)
+			require.Equal(t, tt.out, result)
+		})
 	}
 }
