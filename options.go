@@ -5,7 +5,11 @@ import (
 	"log"
 	"strings"
 
+	"github.com/google/shlex"
+	flags "github.com/jessevdk/go-flags"
+	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomaso-mirodin/go-shorten/storage/multistorage"
 )
 
 type Options struct {
@@ -33,6 +37,10 @@ type Options struct {
 	Regex struct {
 		Remaps map[string]string `long:"regex-remap" env:"REGEX_REMAP"`
 	} `group:"Regex Storage Options"`
+
+	Multistorage struct {
+		StorageArgs []string `long:"multi-sub-args" env:"MULTI_SUB_ARGS"`
+	} `group:"Multi Storage Options"`
 }
 
 // createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
@@ -46,18 +54,49 @@ func createStorageFromOption(opts *Options) (storage.Storage, error) {
 		log.Println("Setting up an S3 Storage layer")
 
 		if len(opts.S3.BucketName) == 0 {
-			log.Fatalf("BucketName has be something (currently has zero length)")
+			log.Fatalf("BucketName has be something (currently empty)")
 		}
 
 		return storage.NewS3(nil, opts.S3.BucketName)
 	case "Filesystem":
-		log.Println("Setting up a Filesystem storage layer with root: %v", opts.Filesystem.RootPath)
+		log.Printf("Setting up a Filesystem storage layer with root: %v", opts.Filesystem.RootPath)
 
 		return storage.NewFilesystem(opts.Filesystem.RootPath)
 	case "Regex":
 		log.Printf("Setting up a Regex storage with %v remaps", opts.Regex.Remaps)
 
 		return storage.NewRegexFromList(opts.Regex.Remaps)
+	case "Multistorage":
+		log.Printf("Setting up a Multilayer Storage layer with children: %q", opts)
+		log.Println("WARNING: Multilayer currently only works in a READ ONLY mode")
+
+		storages := make([]storage.NamedStorage, 0, len(opts.Multistorage.StorageArgs))
+		for i, rawArgs := range opts.Multistorage.StorageArgs {
+			subArgs, err := shlex.Split(rawArgs)
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to split arguments for argument #%d", i)
+			}
+
+			var subOpt Options
+			_, err = flags.ParseArgs(&subOpt, subArgs)
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to cli parse sub argument #%d", i)
+			}
+
+			store, err := createStorageFromOption(&subOpt)
+			if err != nil {
+				return nil, errors.Wrapf(err, "failed to create storage #%d from args", i)
+			}
+
+			nstore, ok := store.(storage.NamedStorage)
+			if !ok {
+				return nil, errors.New("MultiStorage only supports NamedStorage backends")
+			}
+
+			storages = append(storages, nstore)
+		}
+
+		return multistorage.Simple(storages...)
 	default:
 		validTypes := make([]string, len(storage.SupportedStorageTypes))
 
