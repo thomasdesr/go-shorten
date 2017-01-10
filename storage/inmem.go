@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"encoding/json"
+	"fmt"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -15,6 +17,20 @@ type Inmem struct {
 
 	m  map[string]string
 	mu sync.RWMutex
+}
+
+func (s Inmem) String() string {
+	j := struct {
+		RandLength int
+		InnerMap   map[string]string
+	}{s.RandLength, s.m}
+
+	b, err := json.Marshal(j)
+	if err != nil {
+		return fmt.Sprintf("%#v", s)
+	}
+
+	return string(b)
 }
 
 func NewInmem(randLength int) (*Inmem, error) {
