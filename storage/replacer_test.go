@@ -42,6 +42,7 @@ func mapFilterChars(str, chr string) string {
 		return -1
 	}, str)
 }
+
 func TestMapFilterChars(t *testing.T) {
 	for _, tbl := range replacerTestTable {
 		t.Logf("Table: %#v", tbl)
