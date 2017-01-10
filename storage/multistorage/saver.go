@@ -14,7 +14,7 @@ func saveAllFunc(short string, url string, stores []storage.NamedStorage) error 
 		return ErrEmpty
 	}
 
-	var errs *multierror.Error
+	errs := new(multierror.Error)
 	for _, store := range stores {
 		err := store.SaveName(short, url)
 
@@ -29,15 +29,25 @@ func saveAllFunc(short string, url string, stores []storage.NamedStorage) error 
 	return errs.ErrorOrNil()
 }
 
-func saveBestEffortFunc(short string, url string, stores []storage.NamedStorage) error {
+// saveOnlyOnceFunc
+func saveOnlyOnceFunc(short string, url string, stores []storage.NamedStorage) error {
 	if len(stores) == 0 {
 		return ErrEmpty
 	}
 
+	errs := new(multierror.Error)
 	for _, store := range stores {
-		_ = store.SaveName(short, url)
+		err := store.SaveName(short, url)
 
+		if err == nil {
+			return nil
+		}
+
+		multierror.Append(errs, err)
 	}
 
-	return nil
+	return errors.Wrap(
+		errs.ErrorOrNil(),
+		"failed to save to only one store",
+	)
 }
