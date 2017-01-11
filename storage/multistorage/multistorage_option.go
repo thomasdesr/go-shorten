@@ -18,3 +18,19 @@ func LoadCompareAllResults() MultiStorageOption {
 		return nil
 	}
 }
+
+// SaveToAll causes the MultiStorage to try to save the short and url to all of the underlying stores. Any/all errors will be returned together
+func SaveToAll() MultiStorageOption {
+	return func(m *MultiStorage) error {
+		m.saver = saveAllFunc
+		return nil
+	}
+}
+
+// SaveOnlyOnce causes the MultiStorage to try to save the short and url to all of the underlying stores, however it will return immidately if it has any successful saves. This will only report an error if all backends fail
+func SaveOnlyOnce() MultiStorageOption {
+	return func(m *MultiStorage) error {
+		m.saver = saveOnlyOnceFunc
+		return nil
+	}
+}

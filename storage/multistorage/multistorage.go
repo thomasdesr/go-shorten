@@ -13,12 +13,14 @@ func init() {
 type MultiStorage struct {
 	stores []storage.NamedStorage
 	loader Loader
+	saver  Saver
 }
 
 func New(stores []storage.NamedStorage, opts ...MultiStorageOption) (*MultiStorage, error) {
 	m := &MultiStorage{
 		stores: stores,
 		loader: loadFirstFunc,
+		saver:  saveAllFunc,
 	}
 
 	for _, opt := range opts {
@@ -57,12 +59,11 @@ func (s *MultiStorage) Load(short string) (string, error) {
 	return s.loader(short, s.stores)
 }
 
-// // SaveName will return the first successful insure that all
-// func (s *MultiStorage) SaveName(short string, long string) error {
-// 	for _, store := range *s {
-// 		err := store.SaveName(short, long)
-// 		if err != nil {
-// 			return errors.Wrapf(err, "failed to save %q to %q", short, store)
-// 		}
-// 	}
-// }
+// SaveName will return the first successful insure that all
+func (s *MultiStorage) SaveName(short string, long string) error {
+	if err := s.validateStore(); err != nil {
+		return errors.Wrap(err, "failed to validate underlying store")
+	}
+
+	return s.saver(short, long, s.stores)
+}

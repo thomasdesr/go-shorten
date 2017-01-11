@@ -29,18 +29,22 @@ func TestNoBackendsNew(t *testing.T) {
 	}
 }
 
-func TestSingleBackendLoad(t *testing.T) {
+func TestSingleBackend(t *testing.T) {
 	inputShort := "abc"
 	inputLong := "http://def"
 
 	m, err := multistorage.Simple(
-		inmemStorageFromMap(map[string]string{
-			inputShort: inputLong,
-		}),
+		inmemStorageFromMap(map[string]string{}),
 	)
 	if err != nil {
 		t.Fatalf("failed to create multistorage because %q", err)
 	}
+
+	t.Logf("Saving %q->%q", inputShort, inputLong)
+	if err := m.SaveName(inputShort, inputLong); err != nil {
+		t.Fatalf("error saving %q->%q into the store", inputShort, inputLong)
+	}
+	t.Logf("Got: %v", err)
 
 	t.Logf("Loading %q", inputShort)
 	long, err := m.Load(inputShort)
