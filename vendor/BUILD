@@ -675,37 +675,6 @@ go_library(
 )
 
 go_library(
-    name = "github.com/aws/aws-sdk-go/vendor/github.com/go-ini/ini",
-    srcs = [
-        "github.com/aws/aws-sdk-go/vendor/github.com/go-ini/ini/ini.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/go-ini/ini/struct.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath",
-    srcs = [
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/api.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/astnodetype_string.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/functions.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/interpreter.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/lexer.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/parser.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/toktype_string.go",
-        "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/util.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/fuzz",
-    srcs = ["github.com/aws/aws-sdk-go/vendor/github.com/jmespath/go-jmespath/fuzz/jmespath.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/jmespath/go-jmespath"],
-)
-
-go_library(
     name = "github.com/codegangsta/negroni",
     srcs = [
         "github.com/codegangsta/negroni/doc.go",
@@ -1562,4 +1531,26 @@ go_library(
         "github.com/go-ini/ini/struct.go",
     ],
     tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/jmespath/go-jmespath",
+    srcs = [
+        "github.com/jmespath/go-jmespath/api.go",
+        "github.com/jmespath/go-jmespath/astnodetype_string.go",
+        "github.com/jmespath/go-jmespath/functions.go",
+        "github.com/jmespath/go-jmespath/interpreter.go",
+        "github.com/jmespath/go-jmespath/lexer.go",
+        "github.com/jmespath/go-jmespath/parser.go",
+        "github.com/jmespath/go-jmespath/toktype_string.go",
+        "github.com/jmespath/go-jmespath/util.go",
+    ],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/jmespath/go-jmespath/fuzz",
+    srcs = ["github.com/jmespath/go-jmespath/fuzz/jmespath.go"],
+    tags = ["automanaged"],
+    deps = ["//vendor:github.com/jmespath/go-jmespath"],
 )
