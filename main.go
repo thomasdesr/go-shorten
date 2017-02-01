@@ -9,7 +9,6 @@ import (
 	"github.com/guregu/kami"
 	"github.com/jessevdk/go-flags"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
-	"github.com/thomaso-mirodin/go-shorten/handlers/templates"
 )
 
 var opts Options
@@ -41,7 +40,7 @@ func main() {
 	// r.Get("/static", http.FileServer(http.Dir(".")))
 
 	// Serve the index
-	r.Get("/", templates.Index())
+	r.Get("/", handlers.Index())
 
 	// Serve the "API"
 	r.Get("/*short", handlers.GetShortHandler(store))

@@ -1,4 +1,4 @@
-package templates
+package handlers
 
 import (
 	"context"
@@ -23,15 +23,15 @@ func IndexWithContext(ctx context.Context, ip IndexParams) context.Context {
 }
 
 func Index() kami.HandlerFunc {
-	t := template.Must(Root.New("index.tmpl").ParseFiles("static/templates/index.tmpl"))
+	t := template.Must(template.ParseFiles("static/templates/index.tmpl"))
 
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		params, ok := IndexFromContext(ctx)
 		if !ok {
 			params = IndexParams{}
 		}
-		err := t.Execute(w, params)
 
+		err := t.Execute(w, params)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

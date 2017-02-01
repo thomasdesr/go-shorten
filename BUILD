@@ -17,7 +17,6 @@ go_library(
     tags = ["automanaged"],
     deps = [
         "//handlers:go_default_library",
-        "//handlers/templates:go_default_library",
         "//storage:go_default_library",
         "//storage/multistorage:go_default_library",
         "//vendor:github.com/codegangsta/negroni",

@@ -11,11 +11,11 @@ go_library(
     name = "go_default_library",
     srcs = [
         "api.go",
+        "index.go",
         "static.go",
     ],
     tags = ["automanaged"],
     deps = [
-        "//handlers/templates:go_default_library",
         "//storage:go_default_library",
         "//vendor:github.com/guregu/kami",
     ],
@@ -30,9 +30,6 @@ filegroup(
 
 filegroup(
     name = "all-srcs",
-    srcs = [
-        ":package-srcs",
-        "//handlers/templates:all-srcs",
-    ],
+    srcs = [":package-srcs"],
     tags = ["automanaged"],
 )

@@ -2,12 +2,12 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/guregu/kami"
-	"github.com/thomaso-mirodin/go-shorten/handlers/templates"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -43,7 +43,7 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 }
 
 func GetShortHandler(store storage.Storage) kami.HandlerType {
-	return func(w http.ResponseWriter, r *http.Request) {
+	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,21 +51,12 @@ func GetShortHandler(store storage.Storage) kami.HandlerType {
 
 		url, err := store.Load(short)
 		if err != nil {
-			t := templates.Root.Lookup("index")
-			if t == nil {
-				http.NotFound(w, r)
-				return
-			}
-
-			w.WriteHeader(http.StatusNotFound)
-			err := t.Execute(w, templates.IndexParams{
+			ctx := IndexWithContext(ctx, IndexParams{
 				Short: short,
 				Error: fmt.Errorf("The link you specified does not exist. You can create it below."),
 			})
 
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
+			Index().ServeHTTPContext(ctx, w, r)
 
 			return
 		}
