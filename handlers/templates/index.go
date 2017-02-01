@@ -1,12 +1,12 @@
 package templates
 
 import (
+	"context"
 	"html/template"
 	"net/http"
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/guregu/kami"
-	"golang.org/x/net/context"
 )
 
 type IndexParams struct {

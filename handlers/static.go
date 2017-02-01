@@ -1,9 +1,8 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
-
-	"golang.org/x/net/context"
 
 	"github.com/GeertJohan/go.rice"
 	"github.com/guregu/kami"
