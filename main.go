@@ -40,10 +40,14 @@ func main() {
 	// r.Get("/static", http.FileServer(http.Dir(".")))
 
 	// Serve the index
-	r.Get("/", handlers.Index())
+	indexPage, err := handlers.NewIndex("static/templates/index.tmpl")
+	if err != nil {
+		log.Fatal("Failed to create index Page", err)
+	}
+	r.Get("/", indexPage)
 
 	// Serve the "API"
-	r.Get("/*short", handlers.GetShortHandler(store))
+	r.Get("/*short", handlers.GetShortHandler(store, indexPage))
 	r.Post("/", handlers.SetShortHandler(store))
 
 	n.UseHandler(r)

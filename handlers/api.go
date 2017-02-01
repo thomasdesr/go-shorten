@@ -29,7 +29,7 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 	return "", fmt.Errorf("failed to find short in request")
 }
 
-func GetShortHandler(store storage.Storage) http.Handler {
+func GetShortHandler(store storage.Storage, index Index) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
@@ -38,12 +38,11 @@ func GetShortHandler(store storage.Storage) http.Handler {
 
 		url, err := store.Load(short)
 		if err != nil {
-			ctx := IndexWithContext(r.Context(), IndexParams{
-				Short: short,
-				Error: fmt.Errorf("The link you specified does not exist. You can create it below."),
-			})
+			idx := index
+			idx.Short = short
+			idx.Error = err
 
-			Index().ServeHTTP(w, r.WithContext(ctx))
+			idx.ServeHTTP(w, r)
 
 			return
 		}

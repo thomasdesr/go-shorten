@@ -1,37 +1,30 @@
 package handlers
 
 import (
-	"context"
 	"html/template"
 	"net/http"
 )
 
-type IndexParams struct {
-	Short string
-	Error error
+type Index struct {
+	Short    string
+	Error    error
+	template *template.Template
 }
 
-func IndexFromContext(ctx context.Context) (IndexParams, bool) {
-	p, ok := ctx.Value("IndexParams").(IndexParams)
-	return p, ok
+var defaultIndexPath = "static/templates/index.tmpl"
+
+func NewIndex(path string) (Index, error) {
+	t, err := template.ParseFiles(path)
+	if err != nil {
+		return Index{}, err
+	}
+
+	return Index{template: t}, nil
 }
 
-func IndexWithContext(ctx context.Context, ip IndexParams) context.Context {
-	return context.WithValue(ctx, "IndexParams", ip)
-}
-
-func Index() http.Handler {
-	t := template.Must(template.ParseFiles("static/templates/index.tmpl"))
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		params, ok := IndexFromContext(r.Context())
-		if !ok {
-			params = IndexParams{}
-		}
-
-		err := t.Execute(w, params)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	})
+func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	err := i.template.Execute(w, i)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
