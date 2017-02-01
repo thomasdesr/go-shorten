@@ -5,7 +5,6 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/GeertJohan/go.rice"
 	"github.com/codegangsta/negroni"
 	"github.com/guregu/kami"
 	"github.com/jessevdk/go-flags"
@@ -14,8 +13,6 @@ import (
 )
 
 var opts Options
-
-//go:generate rice embed-go -v
 
 func main() {
 	if _, err := flags.Parse(&opts); err != nil {
@@ -36,13 +33,15 @@ func main() {
 
 	r := kami.New()
 
-	box := rice.MustFindBox("static")
-
 	// Serve the static content
-	r.Use("/", handlers.Static(box))
+
+	r.Get("/css/*path", handlers.Static("static"))
+	r.Get("/js/*path", handlers.Static("static"))
+	r.Get("/img/*path", handlers.Static("static"))
+	// r.Get("/static", http.FileServer(http.Dir(".")))
 
 	// Serve the index
-	r.Get("/", templates.Index(box))
+	r.Get("/", templates.Index())
 
 	// Serve the "API"
 	r.Get("/*short", handlers.GetShortHandler(store))

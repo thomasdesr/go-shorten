@@ -17,7 +17,6 @@ go_library(
     deps = [
         "//handlers/templates:go_default_library",
         "//storage:go_default_library",
-        "//vendor:github.com/GeertJohan/go.rice",
         "//vendor:github.com/guregu/kami",
     ],
 )

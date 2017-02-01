@@ -10,14 +10,6 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/GeertJohan/go.rice",
-			"repository": "https://github.com/GeertJohan/go.rice",
-			"vcs": "git",
-			"revision": "4bbccbfa39e784796e483270451217d3369ecfbe",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/akavel/rsrc/binutil",
 			"repository": "https://github.com/akavel/rsrc",
 			"vcs": "git",

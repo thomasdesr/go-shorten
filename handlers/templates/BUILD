@@ -14,10 +14,7 @@ go_library(
         "templates.go",
     ],
     tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/GeertJohan/go.rice",
-        "//vendor:github.com/guregu/kami",
-    ],
+    deps = ["//vendor:github.com/guregu/kami"],
 )
 
 filegroup(

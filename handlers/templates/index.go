@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/GeertJohan/go.rice"
 	"github.com/guregu/kami"
 )
 
@@ -23,10 +22,8 @@ func IndexWithContext(ctx context.Context, ip IndexParams) context.Context {
 	return context.WithValue(ctx, "IndexParams", ip)
 }
 
-func Index(srcBox *rice.Box) kami.HandlerFunc {
-	t := template.Must(Root.New("index").Parse(
-		srcBox.MustString("templates/index.tmpl"),
-	))
+func Index() kami.HandlerFunc {
+	t := template.Must(Root.New("index.tmpl").ParseFiles("static/templates/index.tmpl"))
 
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 		params, ok := IndexFromContext(ctx)

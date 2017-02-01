@@ -20,7 +20,6 @@ go_library(
         "//handlers/templates:go_default_library",
         "//storage:go_default_library",
         "//storage/multistorage:go_default_library",
-        "//vendor:github.com/GeertJohan/go.rice",
         "//vendor:github.com/codegangsta/negroni",
         "//vendor:github.com/google/shlex",
         "//vendor:github.com/guregu/kami",
