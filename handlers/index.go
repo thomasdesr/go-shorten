@@ -4,8 +4,6 @@ import (
 	"context"
 	"html/template"
 	"net/http"
-
-	"github.com/guregu/kami"
 )
 
 type IndexParams struct {
@@ -22,11 +20,11 @@ func IndexWithContext(ctx context.Context, ip IndexParams) context.Context {
 	return context.WithValue(ctx, "IndexParams", ip)
 }
 
-func Index() kami.HandlerFunc {
+func Index() http.Handler {
 	t := template.Must(template.ParseFiles("static/templates/index.tmpl"))
 
-	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-		params, ok := IndexFromContext(ctx)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		params, ok := IndexFromContext(r.Context())
 		if !ok {
 			params = IndexParams{}
 		}
@@ -35,5 +33,5 @@ func Index() kami.HandlerFunc {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-	}
+	})
 }

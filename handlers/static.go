@@ -1,15 +1,10 @@
 package handlers
 
-import (
-	"context"
-	"net/http"
+import "net/http"
 
-	"github.com/guregu/kami"
-)
-
-func Static(base string) kami.HandlerType {
-	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-		path := kami.Param(ctx, "path")
+func Static(base string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path[1:]
 
 		if len(path) == 0 {
 			http.NotFound(w, r)
@@ -17,5 +12,5 @@ func Static(base string) kami.HandlerType {
 		}
 
 		http.FileServer(http.Dir(base)).ServeHTTP(w, r)
-	}
+	})
 }

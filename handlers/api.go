@@ -2,48 +2,35 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/guregu/kami"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 func getShortFromRequest(r *http.Request) (short string, err error) {
-	short = r.URL.Path[1:]
-
-	if short == "" {
-		switch r.Header.Get("Content-Type") {
-		case "application/json":
-			err = fmt.Errorf("Content-Type of application/json not yet supported")
-		default:
-			short = r.PostFormValue("code")
-		}
+	if short := r.URL.Path[1:]; len(short) > 0 {
+		return short, nil
 	}
 
-	return
+	if short := r.PostFormValue("code"); len(short) > 0 {
+		return short, nil
+	}
+
+	return "", fmt.Errorf("failed to find short in request")
 }
 
 func getURLFromRequest(r *http.Request) (url string, err error) {
-	switch r.Header.Get("Content-Type") {
-	case "application/json":
-		err = fmt.Errorf("Content-Type of application/json not yet supported")
-		return
-	default:
-		url = r.PostFormValue("url")
+	if url := r.PostFormValue("url"); len(url) > 0 {
+		return url, nil
 	}
 
-	if url == "" {
-		err = fmt.Errorf("No URL Provided")
-	}
-
-	return
+	return "", fmt.Errorf("failed to find short in request")
 }
 
-func GetShortHandler(store storage.Storage) kami.HandlerType {
-	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func GetShortHandler(store storage.Storage) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,47 +38,35 @@ func GetShortHandler(store storage.Storage) kami.HandlerType {
 
 		url, err := store.Load(short)
 		if err != nil {
-			ctx := IndexWithContext(ctx, IndexParams{
+			ctx := IndexWithContext(r.Context(), IndexParams{
 				Short: short,
 				Error: fmt.Errorf("The link you specified does not exist. You can create it below."),
 			})
 
-			Index().ServeHTTPContext(ctx, w, r)
+			Index().ServeHTTP(w, r.WithContext(ctx))
 
 			return
 		}
 
-		switch r.Header.Get("Accept") {
-		case "application/json":
-			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-			err := json.NewEncoder(w).Encode(map[string]string{"short": short, "url": url})
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-		case "text/plain":
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			fmt.Fprintln(w, url)
-		default:
-			http.Redirect(w, r, url, http.StatusFound)
-		}
-	}
+		http.Redirect(w, r, url, http.StatusFound)
+	})
 }
 
-func SetShortHandler(store storage.Storage) kami.HandlerType {
+func SetShortHandler(store storage.Storage) http.Handler {
 	named, namedOk := store.(storage.NamedStorage)
 	unnamed, unnamedOk := store.(storage.UnnamedStorage)
 
-	return func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		url, err := getURLFromRequest(r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		if short == "" {
@@ -124,9 +99,6 @@ func SetShortHandler(store storage.Storage) kami.HandlerType {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-		case "text/html":
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			fmt.Fprintln(w, "<html>hello world</html")
 		case "text/plain":
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			fmt.Fprintln(w, short)
@@ -134,6 +106,5 @@ func SetShortHandler(store storage.Storage) kami.HandlerType {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			fmt.Fprintln(w, short)
 		}
-	}
-
+	})
 }
