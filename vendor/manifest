@@ -149,6 +149,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/go-ini/ini",
+			"repository": "https://github.com/go-ini/ini",
+			"vcs": "git",
+			"revision": "e3c2d47c61e5333f9aa2974695dd94396eb69c75",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/golang/protobuf/proto",
 			"repository": "https://github.com/golang/protobuf",
 			"vcs": "git",

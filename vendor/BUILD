@@ -1550,3 +1550,16 @@ go_library(
     srcs = ["github.com/hashicorp/errwrap/errwrap.go"],
     tags = ["automanaged"],
 )
+
+go_library(
+    name = "github.com/go-ini/ini",
+    srcs = [
+        "github.com/go-ini/ini/error.go",
+        "github.com/go-ini/ini/ini.go",
+        "github.com/go-ini/ini/key.go",
+        "github.com/go-ini/ini/parser.go",
+        "github.com/go-ini/ini/section.go",
+        "github.com/go-ini/ini/struct.go",
+    ],
+    tags = ["automanaged"],
+)
