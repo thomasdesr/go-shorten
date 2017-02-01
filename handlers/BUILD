@@ -19,7 +19,6 @@ go_library(
         "//storage:go_default_library",
         "//vendor:github.com/GeertJohan/go.rice",
         "//vendor:github.com/guregu/kami",
-        "//vendor:golang.org/x/net/context",
     ],
 )
 

@@ -925,22 +925,6 @@ go_library(
 )
 
 go_library(
-    name = "golang.org/x/net/context",
-    srcs = [
-        "golang.org/x/net/context/context.go",
-        "golang.org/x/net/context/go17.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "golang.org/x/net/context/ctxhttp",
-    srcs = ["golang.org/x/net/context/ctxhttp/ctxhttp.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:golang.org/x/net/context"],
-)
-
-go_library(
     name = "google.golang.org/appengine",
     srcs = [
         "google.golang.org/appengine/appengine.go",
@@ -1553,4 +1537,20 @@ go_library(
     srcs = ["github.com/jmespath/go-jmespath/fuzz/jmespath.go"],
     tags = ["automanaged"],
     deps = ["//vendor:github.com/jmespath/go-jmespath"],
+)
+
+go_library(
+    name = "golang.org/x/net/context",
+    srcs = [
+        "golang.org/x/net/context/context.go",
+        "golang.org/x/net/context/go17.go",
+    ],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "golang.org/x/net/context/ctxhttp",
+    srcs = ["golang.org/x/net/context/ctxhttp/ctxhttp.go"],
+    tags = ["automanaged"],
+    deps = ["//vendor:golang.org/x/net/context"],
 )
