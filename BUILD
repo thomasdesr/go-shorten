@@ -54,14 +54,14 @@ filegroup(
 
 pkg_tar(
     name = "static-pkg",
-    strip_prefix = "/",
     files = [":static-src"],
+    strip_prefix = "/",
 )
 
 pkg_tar(
     name = "go-shorten-pkg",
+    files = [":go-shorten"],
     package_dir = "go-shorten",
     strip_prefix = "/",
     deps = [":static-pkg"],
-    files = [":go-shorten"],
 )
