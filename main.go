@@ -33,11 +33,10 @@ func main() {
 	r := kami.New()
 
 	// Serve the static content
-
-	r.Get("/css/*path", handlers.Static("static"))
-	r.Get("/js/*path", handlers.Static("static"))
-	r.Get("/img/*path", handlers.Static("static"))
-	// r.Get("/static", http.FileServer(http.Dir(".")))
+	static := handlers.Static("static")
+	r.Get("/css/*path", static)
+	r.Get("/js/*path", static)
+	r.Get("/img/*path", static)
 
 	// Serve the index
 	indexPage, err := handlers.NewIndex("static/templates/index.tmpl")

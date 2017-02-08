@@ -3,6 +3,8 @@ package handlers
 import "net/http"
 
 func Static(base string) http.Handler {
+	sh := http.FileServer(http.Dir(base))
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path[1:]
 
@@ -11,6 +13,6 @@ func Static(base string) http.Handler {
 			return
 		}
 
-		http.FileServer(http.Dir(base)).ServeHTTP(w, r)
+		sh.ServeHTTP(w, r)
 	})
 }
