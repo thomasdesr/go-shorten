@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_prefix")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 
 go_prefix("github.com/thomaso-mirodin/go-shorten")
 
@@ -43,4 +44,24 @@ filegroup(
         "//vendor:all-srcs",
     ],
     tags = ["automanaged"],
+)
+
+filegroup(
+    name = "static-src",
+    srcs = glob(["static/**"]),
+    visibility = ["//visibility:private"],
+)
+
+pkg_tar(
+    name = "static-pkg",
+    strip_prefix = "/",
+    files = [":static-src"],
+)
+
+pkg_tar(
+    name = "go-shorten-pkg",
+    package_dir = "go-shorten",
+    strip_prefix = "/",
+    deps = [":static-pkg"],
+    files = [":go-shorten"],
 )
