@@ -175,14 +175,6 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/guregu/kami",
-			"repository": "https://github.com/guregu/kami",
-			"vcs": "git",
-			"revision": "30dd5200243ade9e445b6e8b544ea4cd5a5b2e87",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/hashicorp/errwrap",
 			"repository": "https://github.com/hashicorp/errwrap",
 			"vcs": "git",
@@ -203,6 +195,14 @@
 			"repository": "https://github.com/jessevdk/go-flags",
 			"vcs": "git",
 			"revision": "4e64e4a4e2552194cf594243e23aa9baf3b4297e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/julienschmidt/httprouter",
+			"repository": "https://github.com/julienschmidt/httprouter",
+			"vcs": "git",
+			"revision": "8a45e95fc75cb77048068a62daed98cc22fdac7c",
 			"branch": "master",
 			"notests": true
 		},

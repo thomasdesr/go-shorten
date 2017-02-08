@@ -15,7 +15,10 @@ go_library(
         "static.go",
     ],
     tags = ["automanaged"],
-    deps = ["//storage:go_default_library"],
+    deps = [
+        "//storage:go_default_library",
+        "//vendor:github.com/pkg/errors",
+    ],
 )
 
 filegroup(

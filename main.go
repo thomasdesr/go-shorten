@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/codegangsta/negroni"
-	"github.com/guregu/kami"
 	"github.com/jessevdk/go-flags"
+	"github.com/julienschmidt/httprouter"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
 )
 
@@ -28,26 +28,22 @@ func main() {
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
+		negroni.NewStatic(http.Dir("static")),
 	)
 
-	r := kami.New()
-
-	// Serve the static content
-	static := handlers.Static("static")
-	r.Get("/css/*path", static)
-	r.Get("/js/*path", static)
-	r.Get("/img/*path", static)
+	r := httprouter.New()
 
 	// Serve the index
 	indexPage, err := handlers.NewIndex("static/templates/index.tmpl")
 	if err != nil {
 		log.Fatal("Failed to create index Page", err)
 	}
-	r.Get("/", indexPage)
 
 	// Serve the "API"
-	r.Get("/*short", handlers.GetShortHandler(store, indexPage))
-	r.Post("/", handlers.SetShortHandler(store))
+	getHandler := handlers.GetShortHandler(store, indexPage)
+	r.Handler("HEAD", "/*short", getHandler)
+	r.Handler("GET", "/*short", getHandler)
+	r.Handler("POST", "/", handlers.SetShortHandler(store))
 
 	n.UseHandler(r)
 

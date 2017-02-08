@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
@@ -33,21 +34,25 @@ func GetShortHandler(store storage.Storage, index Index) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		url, err := store.Load(short)
-		if err != nil {
-			idx := index
-			idx.Short = short
-			idx.Error = err
-
-			idx.ServeHTTP(w, r)
-
+			index.ServeHTTP(w, r)
 			return
 		}
+		index.Short = short
 
-		http.Redirect(w, r, url, http.StatusFound)
+		url, err := store.Load(short)
+		switch err := errors.Cause(err); err {
+		case nil:
+			http.Redirect(w, r, url, http.StatusFound)
+			return
+		case storage.ErrShortNotSet:
+			index.Error = fmt.Errorf("The link you specified does not exist. You can create it below.")
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			index.Error = errors.Wrap(err, "Failed to retrieve link from backend")
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
+		index.ServeHTTP(w, r)
 	})
 }
 

@@ -22,8 +22,8 @@ go_library(
         "//storage/multistorage:go_default_library",
         "//vendor:github.com/codegangsta/negroni",
         "//vendor:github.com/google/shlex",
-        "//vendor:github.com/guregu/kami",
         "//vendor:github.com/jessevdk/go-flags",
+        "//vendor:github.com/julienschmidt/httprouter",
         "//vendor:github.com/pkg/errors",
     ],
 )

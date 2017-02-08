@@ -694,40 +694,6 @@ go_library(
 )
 
 go_library(
-    name = "github.com/guregu/kami",
-    srcs = [
-        "github.com/guregu/kami/defaults.go",
-        "github.com/guregu/kami/globalmux.go",
-        "github.com/guregu/kami/globalmux_17.go",
-        "github.com/guregu/kami/handler_17.go",
-        "github.com/guregu/kami/kami_17.go",
-        "github.com/guregu/kami/middleware.go",
-        "github.com/guregu/kami/middleware_17.go",
-        "github.com/guregu/kami/mux_17.go",
-        "github.com/guregu/kami/params.go",
-        "github.com/guregu/kami/serve.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/dimfeld/httptreemux",
-        "//vendor:github.com/guregu/kami/treemux",
-        "//vendor:github.com/zenazn/goji/bind",
-        "//vendor:github.com/zenazn/goji/graceful",
-        "//vendor:github.com/zenazn/goji/web/mutil",
-        "//vendor:golang.org/x/net/context",
-    ],
-)
-
-go_library(
-    name = "github.com/guregu/kami/treemux",
-    srcs = [
-        "github.com/guregu/kami/treemux/router.go",
-        "github.com/guregu/kami/treemux/tree.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_library(
     name = "github.com/hashicorp/go-multierror",
     srcs = [
         "github.com/hashicorp/go-multierror/append.go",
@@ -1477,4 +1443,14 @@ go_library(
     srcs = ["golang.org/x/net/context/ctxhttp/ctxhttp.go"],
     tags = ["automanaged"],
     deps = ["//vendor:golang.org/x/net/context"],
+)
+
+go_library(
+    name = "github.com/julienschmidt/httprouter",
+    srcs = [
+        "github.com/julienschmidt/httprouter/path.go",
+        "github.com/julienschmidt/httprouter/router.go",
+        "github.com/julienschmidt/httprouter/tree.go",
+    ],
+    tags = ["automanaged"],
 )
