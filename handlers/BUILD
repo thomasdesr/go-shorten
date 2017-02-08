@@ -15,10 +15,7 @@ go_library(
         "static.go",
     ],
     tags = ["automanaged"],
-    deps = [
-        "//storage:go_default_library",
-        "//vendor:github.com/guregu/kami",
-    ],
+    deps = ["//storage:go_default_library"],
 )
 
 filegroup(
