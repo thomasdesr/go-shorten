@@ -12,7 +12,6 @@ go_library(
     srcs = [
         "api.go",
         "index.go",
-        "static.go",
     ],
     tags = ["automanaged"],
     deps = [

@@ -50,8 +50,8 @@ func saveSomething(s storage.Storage) (short string, long string, err error) {
 // }
 
 var storageSetups = map[string]func(testing.TB) storage.Storage{
-	"Inmem": setupInmemStorage,
-	"S3":    setupS3Storage,
+	"Inmem":         setupInmemStorage,
+	"S3Integration": setupS3Storage,
 	"S3v3Migration": func(t testing.TB) storage.Storage {
 		return &migrations.S3v2MigrationStore{setupS3Storage(t).(*storage.S3)}
 	},
@@ -59,7 +59,7 @@ var storageSetups = map[string]func(testing.TB) storage.Storage{
 }
 
 var storageCleanup = map[string]func() error{
-	"S3": cleanupS3Storage,
+	"S3Integration": cleanupS3Storage,
 }
 
 func TestMain(m *testing.M) {
