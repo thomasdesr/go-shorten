@@ -7,6 +7,7 @@ go_binary(
     name = "go-shorten",
     library = ":go_default_library",
     tags = ["automanaged"],
+    visibility = ["//visibility:public"],
 )
 
 go_library(
