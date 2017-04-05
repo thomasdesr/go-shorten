@@ -49,13 +49,14 @@ filegroup(
 filegroup(
     name = "static-src",
     srcs = glob(["static/**"]),
-    visibility = ["//visibility:private"],
+    visibility = ["//visibility:public"],
 )
 
 pkg_tar(
     name = "static-pkg",
     files = [":static-src"],
     strip_prefix = ".",
+    visibility = ["//visibility:public"],
 )
 
 pkg_tar(
