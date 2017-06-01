@@ -8,13 +8,13 @@ This service stores and serves URL redirects. I stole the idea from when I worke
 
 ### Why?
 
-By itself, a shared URL shortening service is stupid useful. Want to visit a thing? Type "go/thing" into your browser and hit enter.
+By itself, a shared URL shortening service is stupid useful. Want to visit a thing? Type `go/thing` into your browser and hit enter.
 
 It is honestly little things like this make everyone's life far easier.
 
 ### How do people use this?
 
-Where I work we generally follow a pattern of `go/$thing` should take you to whatever $thing is. Here are a few examples:
+Where I work we generally follow a pattern of `go/$thing` should take you to whatever `$thing` is. Here are a few examples:
 * Jira is at `go/jira`
 * Github is at `go/gh`, `go/github`, `go/g`, etc
 * Our monitoring dashboards are at `go/graphs`, `go/dashboards`, etc
