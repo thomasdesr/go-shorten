@@ -18,7 +18,7 @@ package migrations
 // // from this:
 // //	short -> url
 // func MigrateS3FromV1ToV2(storage *storage.S3, writenew bool, deleteold bool) {
-// 	log.Println("Begining S3 migration from v1 design to v2")
+// 	log.Println("Beginning S3 migration from v1 design to v2")
 //
 // 	s3b := storage.Bucket
 //

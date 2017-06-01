@@ -140,7 +140,7 @@ func TestNamedStorageNormalization(t *testing.T) {
 }
 
 func TestMissingLoad(t *testing.T) {
-	testCode := "non-existant-short-string"
+	testCode := "non-existent-short-string"
 
 	for name, setupStorage := range storageSetups {
 		setupStorage := setupStorage
