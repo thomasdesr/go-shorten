@@ -22,8 +22,9 @@ Where I work we generally follow a pattern of `go/$thing` should take you to wha
 It is perfectly fine to have duplication, the goal is that all the different ways folks think will all be taken to the right place.
 
 You can also do fancier things like:
-* `go/pr/1234` or `go/#1234` will take you directly to the PR #1234
+* `go/pr/1234` or `go/#1234` will take you directly to PR #1234
 * `go/jira/ABC-1234`, `go/ABC-1234` to go directly to a specific jira issue
+* `go/calendar/$name` will take you to a person's calendar
 
 ### Okay, how do I set this up?
 
