@@ -56,7 +56,7 @@ filegroup(
 pkg_tar(
     name = "static-pkg",
     files = [":static-src"],
-    strip_prefix = ".",
+    strip_prefix = "/",
     visibility = ["//visibility:public"],
 )
 
