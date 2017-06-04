@@ -32,6 +32,8 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 
 func GetShortHandler(store storage.Storage, index Index) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		index := Index{Template: index.Template} // Reset the index template
+
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			index.ServeHTTP(w, r)

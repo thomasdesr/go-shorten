@@ -8,7 +8,7 @@ import (
 type Index struct {
 	Short    string
 	Error    error
-	template *template.Template
+	Template *template.Template
 }
 
 var defaultIndexPath = "static/templates/index.tmpl"
@@ -19,11 +19,11 @@ func NewIndex(path string) (Index, error) {
 		return Index{}, err
 	}
 
-	return Index{template: t}, nil
+	return Index{Template: t}, nil
 }
 
 func (i Index) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := i.template.Execute(w, i)
+	err := i.Template.Execute(w, i)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
