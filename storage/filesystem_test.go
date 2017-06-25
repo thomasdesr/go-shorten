@@ -9,7 +9,7 @@ import (
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
-func setupFilesystemStorage(t testing.TB) storage.Storage {
+func setupFilesystemStorage(t testing.TB) storage.NamedStorage {
 	dir, err := ioutil.TempDir("", "BenchmarkFilesystem")
 	require.Nil(t, err)
 

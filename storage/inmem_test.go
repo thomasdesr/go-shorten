@@ -7,7 +7,7 @@ import (
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
-func setupInmemStorage(t testing.TB) storage.Storage {
+func setupInmemStorage(t testing.TB) storage.NamedStorage {
 	s, err := storage.NewInmem(8)
 	require.Nil(t, err)
 

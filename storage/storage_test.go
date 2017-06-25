@@ -29,7 +29,7 @@ func saveSomething(s storage.NamedStorage) (short string, long string, err error
 	short = randString(10)
 	long = "http://" + randString(20) + ".com"
 
-	return short, long, named.SaveName(context.Background(), short, long)
+	return short, long, s.SaveName(context.Background(), short, long)
 }
 
 // type testExternalStorage struct {
@@ -39,10 +39,10 @@ func saveSomething(s storage.NamedStorage) (short string, long string, err error
 // 	glboalTeardown  func()
 // }
 
-var storageSetups = map[string]func(testing.TB) storage.Storage{
+var storageSetups = map[string]func(testing.TB) storage.NamedStorage{
 	"Inmem":         setupInmemStorage,
 	"S3Integration": setupS3Storage,
-	"S3v3Migration": func(t testing.TB) storage.Storage {
+	"S3v3Migration": func(t testing.TB) storage.NamedStorage {
 		return &migrations.S3v2MigrationStore{setupS3Storage(t).(*storage.S3)}
 	},
 	"Filesystem": setupFilesystemStorage,

@@ -51,7 +51,7 @@ func (s *Filesystem) SaveName(ctx context.Context, rawShort, url string) error {
 	short = FlattenPath(CleanPath(short), "_")
 
 	s.mu.Lock()
-	err := ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744)
+	err = ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744)
 	s.mu.Unlock()
 
 	return err
