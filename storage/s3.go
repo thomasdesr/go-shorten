@@ -64,11 +64,11 @@ func NewS3(awsSession *session.Session, bucketName string) (*S3, error) {
 	return s, err
 }
 
-func (s *S3) saveKey(short, url string) (err error) {
+func (s *S3) saveKey(ctx context.Context, short, url string) (err error) {
 	hashedShort := s.hashFunc(short)
 	s3BucketPrefix := path.Join(s.storageVersion, hashedShort)
 
-	_, err = s.Client.PutObject(&s3.PutObjectInput{
+	_, err = s.Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(s.BucketName),
 		Key:         aws.String(path.Join(s3BucketPrefix, "long")),
 		Body:        strings.NewReader(url),
@@ -78,7 +78,7 @@ func (s *S3) saveKey(short, url string) (err error) {
 		return errors.Wrap(err, "failed to save long url to s3")
 	}
 
-	_, err = s.Client.PutObject(&s3.PutObjectInput{
+	_, err = s.Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(s.BucketName),
 		Key:         aws.String(path.Join(s3BucketPrefix, "short")),
 		Body:        strings.NewReader(short),
@@ -101,7 +101,7 @@ func (s *S3) saveKey(short, url string) (err error) {
 		return errors.Wrap(err, "unable to format change history")
 	}
 
-	_, err = s.Client.PutObject(&s3.PutObjectInput{
+	_, err = s.Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(s.BucketName),
 		Key: aws.String(
 			path.Join(
@@ -128,7 +128,7 @@ func (s *S3) SaveName(ctx context.Context, rawShort string, url string) error {
 		return err
 	}
 
-	return s.saveKey(short, url)
+	return s.saveKey(ctx, short, url)
 }
 
 func (s *S3) Load(ctx context.Context, rawShort string) (string, error) {
@@ -137,7 +137,7 @@ func (s *S3) Load(ctx context.Context, rawShort string) (string, error) {
 		return "", err
 	}
 
-	resp, err := s.Client.GetObject(&s3.GetObjectInput{
+	resp, err := s.Client.GetObjectWithContext(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(s.BucketName),
 		Key:    aws.String(path.Join(s.storageVersion, s.hashFunc(short), "long")),
 	})
