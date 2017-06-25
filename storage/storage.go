@@ -1,8 +1,4 @@
 // Package storages allows multiple implementation on how to store URLs as shorter names and retrieve them later.
-//
-// There are currently two types of storage layers, Named and Unnamed.
-// Named storage layers allow the user to provide a short name and a URL
-// Unnamed storage layers only accept the URL to store
 package storage
 
 import (
