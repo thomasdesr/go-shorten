@@ -31,7 +31,7 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 }
 
 func GetShortHandler(store storage.Storage, index Index) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return instrumentHandler("get_short", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		index := Index{Template: index.Template} // Reset the index template
 
 		short, err := getShortFromRequest(r)
@@ -55,11 +55,11 @@ func GetShortHandler(store storage.Storage, index Index) http.Handler {
 		}
 
 		index.ServeHTTP(w, r)
-	})
+	}))
 }
 
 func SetShortHandler(store storage.NamedStorage) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return instrumentHandler("set_short", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -99,5 +99,5 @@ func SetShortHandler(store storage.NamedStorage) http.Handler {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			fmt.Fprintln(w, short)
 		}
-	})
+	}))
 }

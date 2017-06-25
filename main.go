@@ -8,6 +8,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/jessevdk/go-flags"
 	"github.com/julienschmidt/httprouter"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
 )
 
@@ -46,6 +47,13 @@ func main() {
 	r.Handler("POST", "/", handlers.SetShortHandler(store))
 
 	n.UseHandler(r)
+
+	go func() {
+		err := http.ListenAndServe(net.JoinHostPort(opts.BindHost, "8081"), promhttp.Handler())
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	log.Printf("Starting HTTP Listener on: %s", net.JoinHostPort(opts.BindHost, opts.BindPort))
 	err = http.ListenAndServe(net.JoinHostPort(opts.BindHost, opts.BindPort), n)
