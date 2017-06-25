@@ -15,7 +15,6 @@ func init() {
 
 type Filesystem struct {
 	Root string
-	c    uint64
 	mu   sync.RWMutex
 }
 
@@ -52,10 +51,7 @@ func (s *Filesystem) SaveName(ctx context.Context, rawShort, url string) error {
 	short = FlattenPath(CleanPath(short), "_")
 
 	s.mu.Lock()
-
-	if err := ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744); err == nil {
-		s.c++
-	}
+	err := ioutil.WriteFile(filepath.Join(s.Root, short), []byte(url), 0744)
 	s.mu.Unlock()
 
 	return err
