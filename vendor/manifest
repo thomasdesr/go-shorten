@@ -48,7 +48,7 @@
 			"importpath": "github.com/codegangsta/negroni",
 			"repository": "https://github.com/codegangsta/negroni",
 			"vcs": "git",
-			"revision": "61dbefc515b4dede6eb2de7df1e54d49edce892d",
+			"revision": "460c5567329bbad8917f126d2b386787f48e343b",
 			"branch": "master",
 			"notests": true
 		},
@@ -81,7 +81,7 @@
 			"importpath": "github.com/dimfeld/httptreemux",
 			"repository": "https://github.com/dimfeld/httptreemux",
 			"vcs": "git",
-			"revision": "d80c43eb9e175a95c938c070e90a5e7fc6ac7954",
+			"revision": "55bdaa3f4bf4cf91acd94701fa2044fb487c455b",
 			"branch": "master",
 			"notests": true
 		},
@@ -89,7 +89,7 @@
 			"importpath": "github.com/go-ini/ini",
 			"repository": "https://github.com/go-ini/ini",
 			"vcs": "git",
-			"revision": "e3c2d47c61e5333f9aa2974695dd94396eb69c75",
+			"revision": "d3de07a94d22b4a0972deb4b96d790c2c0ce8333",
 			"branch": "master",
 			"notests": true
 		},
@@ -105,7 +105,7 @@
 			"importpath": "github.com/golang/protobuf/proto",
 			"repository": "https://github.com/golang/protobuf",
 			"vcs": "git",
-			"revision": "8ee79997227bf9b34611aee7946ae64735e6fd93",
+			"revision": "6a1fa9404c0aebf36c879bc50152edcc953910d2",
 			"branch": "master",
 			"path": "/proto",
 			"notests": true
@@ -114,7 +114,7 @@
 			"importpath": "github.com/golang/protobuf/ptypes/any",
 			"repository": "https://github.com/golang/protobuf",
 			"vcs": "git",
-			"revision": "8ee79997227bf9b34611aee7946ae64735e6fd93",
+			"revision": "6a1fa9404c0aebf36c879bc50152edcc953910d2",
 			"branch": "master",
 			"path": "ptypes/any",
 			"notests": true
@@ -147,7 +147,7 @@
 			"importpath": "github.com/hashicorp/go-multierror",
 			"repository": "https://github.com/hashicorp/go-multierror",
 			"vcs": "git",
-			"revision": "ed905158d87462226a13fe39ddf685ea65f1c11f",
+			"revision": "83588e72410abfbe4df460eeb6f30841ae47d4c4",
 			"branch": "master",
 			"notests": true
 		},
@@ -155,7 +155,7 @@
 			"importpath": "github.com/jessevdk/go-flags",
 			"repository": "https://github.com/jessevdk/go-flags",
 			"vcs": "git",
-			"revision": "4e64e4a4e2552194cf594243e23aa9baf3b4297e",
+			"revision": "5695738f733662da3e9afc2283bba6f3c879002d",
 			"branch": "master",
 			"notests": true
 		},
@@ -163,7 +163,7 @@
 			"importpath": "github.com/julienschmidt/httprouter",
 			"repository": "https://github.com/julienschmidt/httprouter",
 			"vcs": "git",
-			"revision": "8a45e95fc75cb77048068a62daed98cc22fdac7c",
+			"revision": "975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e",
 			"branch": "master",
 			"notests": true
 		},
@@ -171,7 +171,7 @@
 			"importpath": "github.com/kardianos/osext",
 			"repository": "https://github.com/kardianos/osext",
 			"vcs": "git",
-			"revision": "c2c54e542fb797ad986b31721e1baedf214ca413",
+			"revision": "ae77be60afb1dcacde03767a8c37337fad28ac14",
 			"branch": "master",
 			"notests": true
 		},
@@ -188,7 +188,7 @@
 			"importpath": "github.com/pkg/errors",
 			"repository": "https://github.com/pkg/errors",
 			"vcs": "git",
-			"revision": "248dadf4e9068a0b3e79f02ed0a610d935de5302",
+			"revision": "c605e284fe17294bda444b34710735b29d1a9d90",
 			"branch": "master",
 			"notests": true
 		},
@@ -311,7 +311,7 @@
 			"importpath": "golang.org/x/net/context",
 			"repository": "https://go.googlesource.com/net",
 			"vcs": "git",
-			"revision": "f2499483f923065a842d38eb4c7f1927e6fc6e6d",
+			"revision": "5f8847ae0d0e90b6a9dc8148e7ad616874625171",
 			"branch": "master",
 			"path": "/context",
 			"notests": true
@@ -395,14 +395,6 @@
 			"revision": "4e9ab9ee170f2a39bd66c92b3e0a47ff47a4bc77",
 			"branch": "master",
 			"path": "unicode/cldr",
-			"notests": true
-		},
-		{
-			"importpath": "google.golang.org/appengine",
-			"repository": "https://github.com/golang/appengine",
-			"vcs": "git",
-			"revision": "a2c54d2174c17540446e0ced57d9d459af61bc1c",
-			"branch": "master",
 			"notests": true
 		}
 	]
