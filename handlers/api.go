@@ -2,7 +2,6 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -42,7 +41,7 @@ func GetShortHandler(store storage.Storage, index Index) http.Handler {
 		}
 		index.Short = short
 
-		url, err := store.Load(context.TODO(), short)
+		url, err := store.Load(r.Context(), short)
 		switch err := errors.Cause(err); err {
 		case nil:
 			http.Redirect(w, r, url, http.StatusFound)
@@ -82,14 +81,14 @@ func SetShortHandler(store storage.Storage) http.Handler {
 				return
 			}
 
-			short, err = unnamed.Save(context.TODO(), url)
+			short, err = unnamed.Save(r.Context(), url)
 		} else {
 			if !namedOk {
 				http.Error(w, "Current storage layer does not support storing a named url", http.StatusBadRequest)
 				return
 			}
 
-			err = named.SaveName(context.TODO(), short, url)
+			err = named.SaveName(r.Context(), short, url)
 		}
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Failed to save '%s' to '%s' because: %s", url, short, err), http.StatusInternalServerError)
