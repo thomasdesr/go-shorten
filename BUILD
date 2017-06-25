@@ -26,6 +26,7 @@ go_library(
         "//vendor:github.com/jessevdk/go-flags",
         "//vendor:github.com/julienschmidt/httprouter",
         "//vendor:github.com/pkg/errors",
+        "//vendor:github.com/prometheus/client_golang/prometheus/promhttp",
     ],
 )
 
