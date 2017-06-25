@@ -44,7 +44,7 @@ type Options struct {
 }
 
 // createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
-func createStorageFromOption(opts *Options) (storage.Storage, error) {
+func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 	switch opts.StorageType {
 	case "Inmem":
 		log.Printf("Setting up an Inmem Storage layer with short code length of '%d'", opts.Inmem.RandLength)

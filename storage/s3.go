@@ -119,27 +119,6 @@ func (s *S3) saveKey(short, url string) (err error) {
 	return nil
 }
 
-func (s *S3) Save(ctx context.Context, url string) (string, error) {
-	if _, err := validateURL(url); err != nil {
-		return "", err
-	}
-
-	for i := 0; i < 10; i++ {
-		short := getRandomString(8)
-		pathToShort := path.Join(s.storageVersion, s.hashFunc(short))
-
-		_, err := s.Client.HeadObject(&s3.HeadObjectInput{
-			Bucket: aws.String(s.BucketName),
-			Key:    aws.String(pathToShort),
-		})
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NotFound" {
-			return short, s.saveKey(short, url)
-		}
-	}
-
-	return "", ErrShortExhaustion
-}
-
 func (s *S3) SaveName(ctx context.Context, rawShort string, url string) error {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {

@@ -50,8 +50,8 @@ func (r Regex) Load(ctx context.Context, short string) (string, error) {
 	return "", ErrShortNotSet
 }
 
-func (r Regex) SaveName(ctx context.Context, short string, long string) (string, error) {
+func (r Regex) SaveName(ctx context.Context, short string, long string) error {
 	// Regex intentionally doesn't do sanitization, each regex can have whatever flexability it wants
 
-	return "", fmt.Errorf("regex doesn't yet support saving after creation")
+	return fmt.Errorf("regex doesn't yet support saving after creation")
 }

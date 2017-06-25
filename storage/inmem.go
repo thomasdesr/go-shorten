@@ -55,28 +55,6 @@ func NewInmemFromMap(randLength int, initialShorts map[string]string) (*Inmem, e
 	return s, nil
 }
 
-func (s *Inmem) Save(ctx context.Context, url string) (string, error) {
-	if _, err := validateURL(url); err != nil {
-		return "", err
-	}
-
-	var code string
-
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	for i := 0; i < 10; i++ {
-		code = getRandomString(s.RandLength)
-
-		if _, ok := s.m[code]; !ok {
-			s.m[code] = url
-			return code, nil
-		}
-	}
-
-	return "", ErrShortExhaustion
-}
-
 func (s *Inmem) SaveName(ctx context.Context, rawShort string, url string) error {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {

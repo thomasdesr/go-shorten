@@ -17,12 +17,6 @@ type Storage interface {
 	Load(ctx context.Context, short string) (string, error)
 }
 
-type UnnamedStorage interface {
-	Storage
-	// Save(ctx, string) takes a full URL and returns the short URL after saving it to storage
-	Save(ctx context.Context, url string) (string, error)
-}
-
 type NamedStorage interface {
 	Storage
 	// SaveName takes a short and a url and saves the name to use for saving a url
@@ -37,8 +31,7 @@ var (
 
 	ErrURLNotAbsolute = errors.New("provided URL is not an absolute URL")
 
-	ErrShortNotSet     = errors.New("storage layer doens't have a URL for that short code")
-	ErrShortExhaustion = errors.New("tried to set short, but unable to find a unique shortname within 10 tries")
+	ErrShortNotSet = errors.New("storage layer doens't have a URL for that short code")
 )
 
 func validateShort(short string) error {

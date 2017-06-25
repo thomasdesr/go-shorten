@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -25,27 +24,6 @@ func NewFilesystem(root string) (*Filesystem, error) {
 		Root: root,
 	}
 	return s, os.MkdirAll(s.Root, 0744)
-}
-
-func (s *Filesystem) Code(url string) string {
-	return strconv.FormatUint(s.c, 36)
-}
-
-func (s *Filesystem) Save(ctx context.Context, url string) (string, error) {
-	if _, err := validateURL(url); err != nil {
-		return "", err
-	}
-
-	code := s.Code(url)
-
-	s.mu.Lock()
-	err := ioutil.WriteFile(filepath.Join(s.Root, code), []byte(url), 0744)
-	if err == nil {
-		s.c++
-	}
-	s.mu.Unlock()
-
-	return code, err
 }
 
 // CleanPath removes any path transversal nonsense

@@ -58,14 +58,15 @@ func GetShortHandler(store storage.Storage, index Index) http.Handler {
 	})
 }
 
-func SetShortHandler(store storage.Storage) http.Handler {
-	named, namedOk := store.(storage.NamedStorage)
-	unnamed, unnamedOk := store.(storage.UnnamedStorage)
-
+func SetShortHandler(store storage.NamedStorage) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		if short == "" {
+			http.Error(w, "Missing short name", http.StatusBadRequest)
 			return
 		}
 
@@ -75,21 +76,7 @@ func SetShortHandler(store storage.Storage) http.Handler {
 			return
 		}
 
-		if short == "" {
-			if !unnamedOk {
-				http.Error(w, "Current storage layer does not support storing an unnamed url", http.StatusBadRequest)
-				return
-			}
-
-			short, err = unnamed.Save(r.Context(), url)
-		} else {
-			if !namedOk {
-				http.Error(w, "Current storage layer does not support storing a named url", http.StatusBadRequest)
-				return
-			}
-
-			err = named.SaveName(r.Context(), short, url)
-		}
+		err = store.SaveName(r.Context(), short, url)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Failed to save '%s' to '%s' because: %s", url, short, err), http.StatusInternalServerError)
 			return

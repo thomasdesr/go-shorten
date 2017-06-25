@@ -25,22 +25,11 @@ func randString(length int) string {
 	return string(b)
 }
 
-func saveSomething(s storage.Storage) (short string, long string, err error) {
-	unnamed, unnamedOk := s.(storage.UnnamedStorage)
-	named, namedOk := s.(storage.NamedStorage)
-
+func saveSomething(s storage.NamedStorage) (short string, long string, err error) {
 	short = randString(10)
 	long = "http://" + randString(20) + ".com"
 
-	if namedOk {
-		err := named.SaveName(context.Background(), short, long)
-		return short, long, err
-	} else if unnamedOk {
-		short, err := unnamed.Save(context.Background(), long)
-		return short, long, err
-	} else {
-		return "", "", fmt.Errorf("Storage isn't named or unnamed, can't save anything")
-	}
+	return short, long, named.SaveName(context.Background(), short, long)
 }
 
 // type testExternalStorage struct {
@@ -74,24 +63,6 @@ func TestMain(m *testing.M) {
 	}
 
 	os.Exit(res)
-}
-
-func TestUnnamedStorageSave(t *testing.T) {
-	testURL := "http://google.com"
-
-	for name, setupStorage := range storageSetups {
-		setupStorage := setupStorage
-
-		t.Run(name, func(t *testing.T) {
-			unnamedStorage, ok := setupStorage(t).(storage.UnnamedStorage)
-
-			if assert.True(t, ok, name) {
-				code, err := unnamedStorage.Save(context.Background(), testURL)
-				t.Logf("[%s] unnamedStorage.Save(\"%s\") -> %#v", name, testURL, code)
-				assert.Nil(t, err, name)
-			}
-		})
-	}
 }
 
 func TestNamedStorageSave(t *testing.T) {
