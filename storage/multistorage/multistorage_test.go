@@ -1,6 +1,7 @@
 package multistorage_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -41,13 +42,13 @@ func TestSingleBackend(t *testing.T) {
 	}
 
 	t.Logf("Saving %q->%q", inputShort, inputLong)
-	if err := m.SaveName(inputShort, inputLong); err != nil {
+	if err := m.SaveName(context.Background(), inputShort, inputLong); err != nil {
 		t.Fatalf("error saving %q->%q into the store", inputShort, inputLong)
 	}
 	t.Logf("Got: %v", err)
 
 	t.Logf("Loading %q", inputShort)
-	long, err := m.Load(inputShort)
+	long, err := m.Load(context.Background(), inputShort)
 	t.Logf("Got: %q, %v", long, err)
 	if err != nil {
 		t.Fatalf("error loading value that should exist: %q", err)
@@ -77,7 +78,7 @@ func TestMultipleBackendLoad(t *testing.T) {
 	for _, input := range inputShorts {
 		for inputShort, expectedLong := range input {
 			t.Logf("Loading %q", inputShort)
-			long, err := m.Load(inputShort)
+			long, err := m.Load(context.Background(), inputShort)
 			t.Logf("Got: %q, %v", long, err)
 			if err != nil {
 				t.Errorf("loading %q returned an error: %q", inputShort, err)

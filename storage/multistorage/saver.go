@@ -1,22 +1,24 @@
 package multistorage
 
 import (
+	"context"
+
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 // Saver are expected to process a slice of storages and return a result of SaveName(short, url string)
-type Saver func(short string, url string, stores []storage.NamedStorage) error
+type Saver func(ctx context.Context, short string, url string, stores []storage.NamedStorage) error
 
-func saveAllFunc(short string, url string, stores []storage.NamedStorage) error {
+func saveAllFunc(ctx context.Context, short string, url string, stores []storage.NamedStorage) error {
 	if len(stores) == 0 {
 		return ErrEmpty
 	}
 
 	errs := new(multierror.Error)
 	for _, store := range stores {
-		err := store.SaveName(short, url)
+		err := store.SaveName(ctx, short, url)
 
 		if err != nil {
 			multierror.Append(
@@ -30,14 +32,14 @@ func saveAllFunc(short string, url string, stores []storage.NamedStorage) error 
 }
 
 // saveOnlyOnceFunc
-func saveOnlyOnceFunc(short string, url string, stores []storage.NamedStorage) error {
+func saveOnlyOnceFunc(ctx context.Context, short string, url string, stores []storage.NamedStorage) error {
 	if len(stores) == 0 {
 		return ErrEmpty
 	}
 
 	errs := new(multierror.Error)
 	for _, store := range stores {
-		err := store.SaveName(short, url)
+		err := store.SaveName(ctx, short, url)
 
 		if err == nil {
 			return nil

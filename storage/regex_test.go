@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -29,7 +30,7 @@ func TestRegexLoad(t *testing.T) {
 
 	for _, tt := range testTable {
 		t.Logf("Table: %#v", tt)
-		actual, err := r.Load(tt.in)
+		actual, err := r.Load(context.Background(), tt.in)
 		if err != tt.err {
 			t.Errorf("actual err (%q) != expected err (%q)", err, tt.err)
 		}

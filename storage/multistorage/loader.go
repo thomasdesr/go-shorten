@@ -1,20 +1,22 @@
 package multistorage
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 // Loaders are expected to process the slice of stores and return the result of Load(short) from one of them. Should return ErrEmpty if stores is empty
-type Loader func(short string, stores []storage.NamedStorage) (string, error)
+type Loader func(ctx context.Context, short string, stores []storage.NamedStorage) (string, error)
 
-func loadFirstFunc(short string, stores []storage.NamedStorage) (string, error) {
+func loadFirstFunc(ctx context.Context, short string, stores []storage.NamedStorage) (string, error) {
 	if len(stores) == 0 {
 		return "", ErrEmpty
 	}
 
 	for _, store := range stores {
-		long, err := store.Load(short)
+		long, err := store.Load(ctx, short)
 		if err == storage.ErrShortNotSet {
 			continue
 		}
@@ -26,14 +28,14 @@ func loadFirstFunc(short string, stores []storage.NamedStorage) (string, error) 
 
 var ErrUnexpectedMultipleAnswers = errors.New("MultiStorage: results returned were not the same")
 
-func loadCompareAllResultsFunc(short string, stores []storage.NamedStorage) (string, error) {
+func loadCompareAllResultsFunc(ctx context.Context, short string, stores []storage.NamedStorage) (string, error) {
 	if len(stores) == 0 {
 		return "", ErrEmpty
 	}
 
 	results := make([]loadResult, 0, len(stores))
 	for _, store := range stores {
-		s, err := store.Load(short)
+		s, err := store.Load(ctx, short)
 
 		results = append(results, loadResult{s, err})
 	}

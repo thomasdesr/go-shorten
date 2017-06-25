@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -30,7 +31,7 @@ func (s *Filesystem) Code(url string) string {
 	return strconv.FormatUint(s.c, 36)
 }
 
-func (s *Filesystem) Save(url string) (string, error) {
+func (s *Filesystem) Save(ctx context.Context, url string) (string, error) {
 	if _, err := validateURL(url); err != nil {
 		return "", err
 	}
@@ -61,7 +62,7 @@ func FlattenPath(path string, separator string) string {
 	return strings.Replace(path, string(os.PathSeparator), separator, -1)
 }
 
-func (s *Filesystem) SaveName(rawShort, url string) error {
+func (s *Filesystem) SaveName(ctx context.Context, rawShort, url string) error {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return err
@@ -82,7 +83,7 @@ func (s *Filesystem) SaveName(rawShort, url string) error {
 	return err
 }
 
-func (s *Filesystem) Load(rawShort string) (string, error) {
+func (s *Filesystem) Load(ctx context.Context, rawShort string) (string, error) {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return "", err

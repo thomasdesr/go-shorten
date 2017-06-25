@@ -1,6 +1,8 @@
 package multistorage
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
@@ -51,19 +53,19 @@ func (s *MultiStorage) validateStore() error {
 }
 
 // Load with a basic MultiStorage will query the underlying storages (in order) returning when either a response or error is encountered, only returning an ErrShortNotSet when all underlying storages have been exhausted.
-func (s *MultiStorage) Load(short string) (string, error) {
+func (s *MultiStorage) Load(ctx context.Context, short string) (string, error) {
 	if err := s.validateStore(); err != nil {
 		return "", errors.Wrap(err, "failed to validate underlying store")
 	}
 
-	return s.loader(short, s.stores)
+	return s.loader(ctx, short, s.stores)
 }
 
 // SaveName will return the first successful insure that all
-func (s *MultiStorage) SaveName(short string, long string) error {
+func (s *MultiStorage) SaveName(ctx context.Context, short string, long string) error {
 	if err := s.validateStore(); err != nil {
 		return errors.Wrap(err, "failed to validate underlying store")
 	}
 
-	return s.saver(short, long, s.stores)
+	return s.saver(ctx, short, long, s.stores)
 }

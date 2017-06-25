@@ -1,6 +1,10 @@
 package migrations
 
-import "github.com/thomaso-mirodin/go-shorten/storage"
+import (
+	"context"
+
+	"github.com/thomaso-mirodin/go-shorten/storage"
+)
 
 func init() {
 	storage.SupportedStorageTypes["S3v3"] = new(interface{})
@@ -12,12 +16,12 @@ type S3v2MigrationStore struct {
 	*storage.S3
 }
 
-func (s *S3v2MigrationStore) Load(short string) (long string, err error) {
-	long, err = s.S3.Load(short)
+func (s *S3v2MigrationStore) Load(ctx context.Context, short string) (long string, err error) {
+	long, err = s.S3.Load(ctx, short)
 	if err != nil {
 		return
 	}
 
-	err = s.S3.SaveName(short, long)
+	err = s.S3.SaveName(ctx, short, long)
 	return
 }

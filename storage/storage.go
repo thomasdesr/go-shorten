@@ -6,26 +6,27 @@
 package storage
 
 import (
+	"context"
 	"errors"
 	"net/url"
 	"strings"
 )
 
 type Storage interface {
-	// Load(string) takes a short URL and returns the original full URL by retrieving it from storage
-	Load(short string) (string, error)
+	// Load(ctx, string) takes a short URL and returns the original full URL by retrieving it from storage
+	Load(ctx context.Context, short string) (string, error)
 }
 
 type UnnamedStorage interface {
 	Storage
-	// Save(string) takes a full URL and returns the short URL after saving it to storage
-	Save(url string) (string, error)
+	// Save(ctx, string) takes a full URL and returns the short URL after saving it to storage
+	Save(ctx context.Context, url string) (string, error)
 }
 
 type NamedStorage interface {
 	Storage
 	// SaveName takes a short and a url and saves the name to use for saving a url
-	SaveName(short string, url string) error
+	SaveName(ctx context.Context, short string, url string) error
 }
 
 var SupportedStorageTypes = make(map[string]interface{})

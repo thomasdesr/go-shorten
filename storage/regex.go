@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 )
@@ -37,7 +38,7 @@ func NewRegexFromList(redirects map[string]string) (*Regex, error) {
 	}, nil
 }
 
-func (r Regex) Load(short string) (string, error) {
+func (r Regex) Load(ctx context.Context, short string) (string, error) {
 	// Regex intentionally doesn't do sanitization, each regex can have whatever flexability it wants
 
 	for _, remap := range r.remaps {
@@ -49,7 +50,7 @@ func (r Regex) Load(short string) (string, error) {
 	return "", ErrShortNotSet
 }
 
-func (r Regex) SaveName(short string, long string) (string, error) {
+func (r Regex) SaveName(ctx context.Context, short string, long string) (string, error) {
 	// Regex intentionally doesn't do sanitization, each regex can have whatever flexability it wants
 
 	return "", fmt.Errorf("regex doesn't yet support saving after creation")

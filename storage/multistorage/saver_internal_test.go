@@ -1,6 +1,7 @@
 package multistorage
 
 import (
+	"context"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -21,7 +22,7 @@ func (stv saveTestData) testFunc(t *testing.T, testedFunc Saver) {
 	stores := stv.inputStores
 
 	t.Logf("saving (%q, %q, %q), expecting (%#v)", stv.inputShort, stv.inputURL, stv.inputStores, stv.expectedErr)
-	err := testedFunc(stv.inputShort, stv.inputURL, stores)
+	err := testedFunc(context.Background(), stv.inputShort, stv.inputURL, stores)
 	t.Logf("got: (%#v)", err)
 
 	if cause := errors.Cause(err); cause != stv.expectedErr {

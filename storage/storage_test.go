@@ -1,6 +1,7 @@
 package storage_test
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"math/rand"
@@ -32,10 +33,10 @@ func saveSomething(s storage.Storage) (short string, long string, err error) {
 	long = "http://" + randString(20) + ".com"
 
 	if namedOk {
-		err := named.SaveName(short, long)
+		err := named.SaveName(context.Background(), short, long)
 		return short, long, err
 	} else if unnamedOk {
-		short, err := unnamed.Save(long)
+		short, err := unnamed.Save(context.Background(), long)
 		return short, long, err
 	} else {
 		return "", "", fmt.Errorf("Storage isn't named or unnamed, can't save anything")
@@ -85,7 +86,7 @@ func TestUnnamedStorageSave(t *testing.T) {
 			unnamedStorage, ok := setupStorage(t).(storage.UnnamedStorage)
 
 			if assert.True(t, ok, name) {
-				code, err := unnamedStorage.Save(testURL)
+				code, err := unnamedStorage.Save(context.Background(), testURL)
 				t.Logf("[%s] unnamedStorage.Save(\"%s\") -> %#v", name, testURL, code)
 				assert.Nil(t, err, name)
 			}
@@ -104,7 +105,7 @@ func TestNamedStorageSave(t *testing.T) {
 			namedStorage, ok := setupStorage(t).(storage.NamedStorage)
 
 			if assert.True(t, ok, name) {
-				err := namedStorage.SaveName(testCode, testURL)
+				err := namedStorage.SaveName(context.Background(), testCode, testURL)
 				t.Logf("[%s] namedStorage.SaveName(\"%s\", \"%s\") -> %#v", name, testCode, testURL, err)
 				assert.Nil(t, err, name)
 			}
@@ -124,13 +125,13 @@ func TestNamedStorageNormalization(t *testing.T) {
 			namedStorage, ok := setupStorage(t).(storage.NamedStorage)
 
 			if assert.True(t, ok, name) {
-				err := namedStorage.SaveName(testCode, testURL)
+				err := namedStorage.SaveName(context.Background(), testCode, testURL)
 				t.Logf("[%s] namedStorage.SaveName(\"%s\", \"%s\") -> %#v", name, testCode, testURL, err)
 				assert.Nil(t, err, name)
 
-				a, err := namedStorage.Load(testCode)
+				a, err := namedStorage.Load(context.Background(), testCode)
 				assert.Nil(t, err, name)
-				b, err := namedStorage.Load(testNormalizedCode)
+				b, err := namedStorage.Load(context.Background(), testNormalizedCode)
 				assert.Nil(t, err, name)
 
 				assert.Equal(t, a, b)
@@ -146,7 +147,7 @@ func TestMissingLoad(t *testing.T) {
 		setupStorage := setupStorage
 
 		t.Run(name, func(t *testing.T) {
-			long, err := setupStorage(t).Load(testCode)
+			long, err := setupStorage(t).Load(context.Background(), testCode)
 			t.Logf("[%s] storage.Load(\"%s\") -> %#v, %#v", name, testCode, long, err)
 			assert.NotNil(t, err, name)
 			assert.Equal(t, err, storage.ErrShortNotSet, name)
@@ -165,7 +166,7 @@ func TestLoad(t *testing.T) {
 			t.Logf("[%s] saveSomething(s) -> %#v, %#v, %#v", name, short, long, err)
 			assert.Nil(t, err, name)
 
-			newLong, err := s.Load(short)
+			newLong, err := s.Load(context.Background(), short)
 			t.Logf("[%s] storage.Load(\"%s\") -> %#v, %#v", name, short, long, err)
 			assert.Nil(t, err, name)
 
@@ -202,12 +203,12 @@ func TestNamedStorageNames(t *testing.T) {
 
 			for short, e := range shortNames {
 				t.Logf("[%s] Saving URL '%s' should result in '%s'", storageName, short, e)
-				err := namedStorage.SaveName(short, testURL)
+				err := namedStorage.SaveName(context.Background(), short, testURL)
 				assert.Equal(t, err, e, fmt.Sprintf("[%s] Saving URL '%s' should've resulted in '%s'", storageName, short, e))
 
 				if err == nil {
 					t.Logf("[%s] Loading URL '%s' should result in '%s'", storageName, short, e)
-					url, err := namedStorage.Load(short)
+					url, err := namedStorage.Load(context.Background(), short)
 					assert.Equal(t, err, e, fmt.Sprintf("[%s] Loading URL '%s' should've resulted in '%s'", storageName, short, e))
 
 					assert.Equal(t, url, testURL, "Saved URL shoud've matched")

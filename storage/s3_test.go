@@ -1,6 +1,7 @@
 package storage_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -73,7 +74,7 @@ func BenchmarkS3Save(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		named.SaveName("short", "long")
+		named.SaveName(context.Background(), "short", "long")
 	}
 }
 
@@ -82,10 +83,10 @@ func BenchmarkS3Load(b *testing.B) {
 	named, ok := s.(storage.NamedStorage)
 	require.True(b, ok)
 
-	named.SaveName("short", "long")
+	named.SaveName(context.Background(), "short", "long")
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		named.Load("short")
+		named.Load(context.Background(), "short")
 	}
 }

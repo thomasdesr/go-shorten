@@ -1,6 +1,7 @@
 package multistorage
 
 import (
+	"context"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -78,7 +79,7 @@ func TestLoadFirstFunc(t *testing.T) {
 			t.Parallel()
 
 			t.Logf("querying for %q, expecting (%q,%#v)", tt.inputShort, tt.expectedLong, tt.expectedErr)
-			long, err := loadFirstFunc(tt.inputShort, tt.stores)
+			long, err := loadFirstFunc(context.Background(), tt.inputShort, tt.stores)
 			t.Logf("got: (%q, %#v)", long, err)
 			if cause := errors.Cause(err); cause != tt.expectedErr {
 				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, cause)
@@ -165,7 +166,7 @@ func TestLoadCompareAllResultsFunc(t *testing.T) {
 			t.Parallel()
 
 			t.Logf("querying for %q, expecting (%q,%#v)", tt.inputShort, tt.expectedLong, tt.expectedErr)
-			long, err := loadCompareAllResultsFunc(tt.inputShort, tt.stores)
+			long, err := loadCompareAllResultsFunc(context.Background(), tt.inputShort, tt.stores)
 			t.Logf("got: (%q, %#v)", long, err)
 			if cause := errors.Cause(err); cause != tt.expectedErr {
 				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, cause)

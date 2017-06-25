@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -118,7 +119,7 @@ func (s *S3) saveKey(short, url string) (err error) {
 	return nil
 }
 
-func (s *S3) Save(url string) (string, error) {
+func (s *S3) Save(ctx context.Context, url string) (string, error) {
 	if _, err := validateURL(url); err != nil {
 		return "", err
 	}
@@ -139,7 +140,7 @@ func (s *S3) Save(url string) (string, error) {
 	return "", ErrShortExhaustion
 }
 
-func (s *S3) SaveName(rawShort string, url string) error {
+func (s *S3) SaveName(ctx context.Context, rawShort string, url string) error {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return err
@@ -151,7 +152,7 @@ func (s *S3) SaveName(rawShort string, url string) error {
 	return s.saveKey(short, url)
 }
 
-func (s *S3) Load(rawShort string) (string, error) {
+func (s *S3) Load(ctx context.Context, rawShort string) (string, error) {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return "", err

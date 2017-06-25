@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"sync"
@@ -46,7 +47,7 @@ func NewInmemFromMap(randLength int, initialShorts map[string]string) (*Inmem, e
 	s, _ := NewInmem(randLength)
 
 	for k, v := range initialShorts {
-		if err := s.SaveName(k, v); err != nil {
+		if err := s.SaveName(context.Background(), k, v); err != nil {
 			return nil, errors.Wrap(err, "failed to save initial short")
 		}
 	}
@@ -54,7 +55,7 @@ func NewInmemFromMap(randLength int, initialShorts map[string]string) (*Inmem, e
 	return s, nil
 }
 
-func (s *Inmem) Save(url string) (string, error) {
+func (s *Inmem) Save(ctx context.Context, url string) (string, error) {
 	if _, err := validateURL(url); err != nil {
 		return "", err
 	}
@@ -76,7 +77,7 @@ func (s *Inmem) Save(url string) (string, error) {
 	return "", ErrShortExhaustion
 }
 
-func (s *Inmem) SaveName(rawShort string, url string) error {
+func (s *Inmem) SaveName(ctx context.Context, rawShort string, url string) error {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return err
@@ -91,7 +92,7 @@ func (s *Inmem) SaveName(rawShort string, url string) error {
 	return nil
 }
 
-func (s *Inmem) Load(rawShort string) (string, error) {
+func (s *Inmem) Load(ctx context.Context, rawShort string) (string, error) {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
 		return "", err
