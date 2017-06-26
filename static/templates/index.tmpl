@@ -28,7 +28,7 @@
                             <label for="code">go/</label>
                         </div>
                         <div class="column column-25 code-column">
-                            <input id="code" name="code" type="text" class="form-control"{{if .Short -}} value="{{.Short}}" {{- else -}} placeholder="Enter short url..." autofocus {{- end -}}>
+                            <input id="code" name="code" type="text" class="form-control"{{if .Short -}} value="{{.Short}}" {{- else -}} placeholder="Enter short url..." autofocus {{- end}} required>
                         </div>
                         <div class="column collapse-padding to-column">
                             <label for="url"><h4>to</h4></label>
