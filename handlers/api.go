@@ -2,6 +2,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -30,7 +31,22 @@ func getURLFromRequest(r *http.Request) (url string, err error) {
 	return "", fmt.Errorf("failed to find short in request")
 }
 
-func GetShortHandler(store storage.Storage, index Index) http.Handler {
+func Healthcheck(store storage.Storage, path string) http.Handler {
+	if s, ok := store.(storage.NamedStorage); ok {
+		s.SaveName(context.Background(), path, "https://google.com")
+	}
+
+	return instrumentHandler("healthcheck", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := store.Load(r.Context(), path)
+		if err != nil {
+			http.Error(w, "healtcheck fail", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+}
+
+func GetShort(store storage.Storage, index Index) http.Handler {
 	return instrumentHandler("get_short", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		index := Index{Template: index.Template} // Reset the index template
 
@@ -58,7 +74,7 @@ func GetShortHandler(store storage.Storage, index Index) http.Handler {
 	}))
 }
 
-func SetShortHandler(store storage.NamedStorage) http.Handler {
+func SetShort(store storage.NamedStorage) http.Handler {
 	return instrumentHandler("set_short", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		short, err := getShortFromRequest(r)
 		if err != nil {

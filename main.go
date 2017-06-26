@@ -40,11 +40,11 @@ func main() {
 		log.Fatal("Failed to create index Page", err)
 	}
 
+	r.Handler("GET", "/healthz", handlers.Healthcheck(store, "/healthz"))
+
 	// Serve the "API"
-	getHandler := handlers.GetShortHandler(store, indexPage)
-	r.Handler("HEAD", "/*short", getHandler)
-	r.Handler("GET", "/*short", getHandler)
-	r.Handler("POST", "/", handlers.SetShortHandler(store))
+	r.NotFound = handlers.GetShort(store, indexPage)
+	r.Handler("POST", "/", handlers.SetShort(store))
 
 	n.UseHandler(r)
 
