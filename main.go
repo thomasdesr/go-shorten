@@ -43,6 +43,7 @@ func main() {
 	r.Handler("GET", "/healthz", handlers.Healthcheck(store, "/healthz"))
 
 	// Serve the "API"
+	r.HandleMethodNotAllowed = false
 	r.NotFound = handlers.GetShort(store, indexPage)
 	r.Handler("POST", "/", handlers.SetShort(store))
 
