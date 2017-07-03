@@ -7,10 +7,6 @@ import (
 	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
-func init() {
-	storage.SupportedStorageTypes["MultiStorage"] = new(interface{})
-}
-
 // MultiStorage is a storage.NamedStorage that will allow you to interact with multiple underlying storage.NamedStorages.
 type MultiStorage struct {
 	stores []storage.NamedStorage

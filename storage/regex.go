@@ -6,10 +6,6 @@ import (
 	"regexp"
 )
 
-func init() {
-	SupportedStorageTypes["Regex"] = new(interface{})
-}
-
 type remap struct {
 	Regex       *regexp.Regexp
 	Replacement string

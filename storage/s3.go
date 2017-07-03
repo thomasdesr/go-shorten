@@ -17,10 +17,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-func init() {
-	SupportedStorageTypes["S3"] = new(interface{})
-}
-
 type S3 struct {
 	Client     *s3.S3
 	BucketName string

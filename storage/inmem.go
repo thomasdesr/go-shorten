@@ -9,10 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-func init() {
-	SupportedStorageTypes["Inmem"] = new(interface{})
-}
-
 type Inmem struct {
 	RandLength int
 
