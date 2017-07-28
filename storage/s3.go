@@ -140,6 +140,9 @@ func (s *S3) Load(ctx context.Context, rawShort string) (string, error) {
 	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NoSuchKey" {
 		return "", ErrShortNotSet
 	}
+	if err != nil {
+		return "", err
+	}
 
 	var bb bytes.Buffer
 	if _, err := bb.ReadFrom(resp.Body); err != nil {
