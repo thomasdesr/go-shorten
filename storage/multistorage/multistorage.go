@@ -35,7 +35,7 @@ func New(stores []storage.NamedStorage, opts ...MultiStorageOption) (*MultiStora
 }
 
 func Simple(stores ...storage.NamedStorage) (*MultiStorage, error) {
-	return New(stores, LoadFirst())
+	return New(stores, LoadFirst(), SaveToAll())
 }
 
 var ErrEmpty = errors.New("MultiStorage has no underlying stores")

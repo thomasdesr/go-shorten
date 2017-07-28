@@ -835,567 +835,6 @@ go_library(
     tags = ["automanaged"],
 )
 
-go_library(
-    name = "google.golang.org/appengine",
-    srcs = [
-        "google.golang.org/appengine/appengine.go",
-        "google.golang.org/appengine/appengine_vm.go",
-        "google.golang.org/appengine/errors.go",
-        "google.golang.org/appengine/identity.go",
-        "google.golang.org/appengine/namespace.go",
-        "google.golang.org/appengine/timeout.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/app_identity",
-        "//vendor:google.golang.org/appengine/internal/modules",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/aetest",
-    srcs = [
-        "google.golang.org/appengine/aetest/doc.go",
-        "google.golang.org/appengine/aetest/instance.go",
-        "google.golang.org/appengine/aetest/instance_vm.go",
-        "google.golang.org/appengine/aetest/user.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/user",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/blobstore",
-    srcs = [
-        "google.golang.org/appengine/blobstore/blobstore.go",
-        "google.golang.org/appengine/blobstore/read.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/datastore",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/base",
-        "//vendor:google.golang.org/appengine/internal/blobstore",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/capability",
-    srcs = ["google.golang.org/appengine/capability/capability.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/capability",
-        "//vendor:google.golang.org/appengine/log",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/channel",
-    srcs = ["google.golang.org/appengine/channel/channel.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/base",
-        "//vendor:google.golang.org/appengine/internal/channel",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/cloudsql",
-    srcs = [
-        "google.golang.org/appengine/cloudsql/cloudsql.go",
-        "google.golang.org/appengine/cloudsql/cloudsql_vm.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_binary(
-    name = "google.golang.org/appengine/cmd/aebundler_bin",
-    library = ":google.golang.org/appengine/cmd/aebundler",
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/cmd/aebundler",
-    srcs = ["google.golang.org/appengine/cmd/aebundler/aebundler.go"],
-    tags = ["automanaged"],
-)
-
-go_binary(
-    name = "google.golang.org/appengine/cmd/aedeploy_bin",
-    library = ":google.golang.org/appengine/cmd/aedeploy",
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/cmd/aedeploy",
-    srcs = ["google.golang.org/appengine/cmd/aedeploy/aedeploy.go"],
-    tags = ["automanaged"],
-)
-
-go_binary(
-    name = "google.golang.org/appengine/cmd/aefix_bin",
-    library = ":google.golang.org/appengine/cmd/aefix",
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/cmd/aefix",
-    srcs = [
-        "google.golang.org/appengine/cmd/aefix/ae.go",
-        "google.golang.org/appengine/cmd/aefix/fix.go",
-        "google.golang.org/appengine/cmd/aefix/main.go",
-        "google.golang.org/appengine/cmd/aefix/typecheck.go",
-    ],
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/datastore",
-    srcs = [
-        "google.golang.org/appengine/datastore/datastore.go",
-        "google.golang.org/appengine/datastore/doc.go",
-        "google.golang.org/appengine/datastore/key.go",
-        "google.golang.org/appengine/datastore/load.go",
-        "google.golang.org/appengine/datastore/metadata.go",
-        "google.golang.org/appengine/datastore/prop.go",
-        "google.golang.org/appengine/datastore/query.go",
-        "google.golang.org/appengine/datastore/save.go",
-        "google.golang.org/appengine/datastore/transaction.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/datastore",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/delay",
-    srcs = ["google.golang.org/appengine/delay/delay.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/log",
-        "//vendor:google.golang.org/appengine/taskqueue",
-    ],
-)
-
-go_binary(
-    name = "google.golang.org/appengine/demos/guestbook_bin",
-    library = ":google.golang.org/appengine/demos/guestbook",
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/demos/guestbook",
-    srcs = ["google.golang.org/appengine/demos/guestbook/guestbook.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/datastore",
-        "//vendor:google.golang.org/appengine/log",
-        "//vendor:google.golang.org/appengine/user",
-    ],
-)
-
-go_binary(
-    name = "google.golang.org/appengine/demos/helloworld_bin",
-    library = ":google.golang.org/appengine/demos/helloworld",
-    tags = ["automanaged"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/demos/helloworld",
-    srcs = ["google.golang.org/appengine/demos/helloworld/helloworld.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/log",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/file",
-    srcs = ["google.golang.org/appengine/file/file.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/app_identity",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/image",
-    srcs = ["google.golang.org/appengine/image/image.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/image",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal",
-    srcs = [
-        "google.golang.org/appengine/internal/api.go",
-        "google.golang.org/appengine/internal/api_common.go",
-        "google.golang.org/appengine/internal/app_id.go",
-        "google.golang.org/appengine/internal/identity.go",
-        "google.golang.org/appengine/internal/identity_vm.go",
-        "google.golang.org/appengine/internal/internal.go",
-        "google.golang.org/appengine/internal/main_vm.go",
-        "google.golang.org/appengine/internal/metadata.go",
-        "google.golang.org/appengine/internal/net.go",
-        "google.golang.org/appengine/internal/transaction.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal/base",
-        "//vendor:google.golang.org/appengine/internal/datastore",
-        "//vendor:google.golang.org/appengine/internal/log",
-        "//vendor:google.golang.org/appengine/internal/remote_api",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/aetesting",
-    srcs = ["google.golang.org/appengine/internal/aetesting/fake.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/app_identity",
-    srcs = ["google.golang.org/appengine/internal/app_identity/app_identity_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/base",
-    srcs = ["google.golang.org/appengine/internal/base/api_base.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/blobstore",
-    srcs = ["google.golang.org/appengine/internal/blobstore/blobstore_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/capability",
-    srcs = ["google.golang.org/appengine/internal/capability/capability_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/channel",
-    srcs = ["google.golang.org/appengine/internal/channel/channel_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/datastore",
-    srcs = ["google.golang.org/appengine/internal/datastore/datastore_v3.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/image",
-    srcs = ["google.golang.org/appengine/internal/image/images_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/log",
-    srcs = ["google.golang.org/appengine/internal/log/log_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/mail",
-    srcs = ["google.golang.org/appengine/internal/mail/mail_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/memcache",
-    srcs = ["google.golang.org/appengine/internal/memcache/memcache_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/modules",
-    srcs = ["google.golang.org/appengine/internal/modules/modules_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/remote_api",
-    srcs = ["google.golang.org/appengine/internal/remote_api/remote_api.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/search",
-    srcs = ["google.golang.org/appengine/internal/search/search.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/socket",
-    srcs = ["google.golang.org/appengine/internal/socket/socket_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/system",
-    srcs = ["google.golang.org/appengine/internal/system/system_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/taskqueue",
-    srcs = ["google.golang.org/appengine/internal/taskqueue/taskqueue_service.pb.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:google.golang.org/appengine/internal/datastore",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/urlfetch",
-    srcs = ["google.golang.org/appengine/internal/urlfetch/urlfetch_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/user",
-    srcs = ["google.golang.org/appengine/internal/user/user_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/internal/xmpp",
-    srcs = ["google.golang.org/appengine/internal/xmpp/xmpp_service.pb.go"],
-    tags = ["automanaged"],
-    deps = ["//vendor:github.com/golang/protobuf/proto"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/log",
-    srcs = [
-        "google.golang.org/appengine/log/api.go",
-        "google.golang.org/appengine/log/log.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/log",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/mail",
-    srcs = ["google.golang.org/appengine/mail/mail.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/base",
-        "//vendor:google.golang.org/appengine/internal/mail",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/memcache",
-    srcs = ["google.golang.org/appengine/memcache/memcache.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/memcache",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/module",
-    srcs = ["google.golang.org/appengine/module/module.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/modules",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/remote_api",
-    srcs = [
-        "google.golang.org/appengine/remote_api/client.go",
-        "google.golang.org/appengine/remote_api/remote_api.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/remote_api",
-        "//vendor:google.golang.org/appengine/log",
-        "//vendor:google.golang.org/appengine/user",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/runtime",
-    srcs = ["google.golang.org/appengine/runtime/runtime.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/system",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/search",
-    srcs = [
-        "google.golang.org/appengine/search/doc.go",
-        "google.golang.org/appengine/search/field.go",
-        "google.golang.org/appengine/search/search.go",
-        "google.golang.org/appengine/search/struct.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/search",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/socket",
-    srcs = [
-        "google.golang.org/appengine/socket/doc.go",
-        "google.golang.org/appengine/socket/socket_vm.go",
-    ],
-    tags = ["automanaged"],
-    deps = ["//vendor:golang.org/x/net/context"],
-)
-
-go_library(
-    name = "google.golang.org/appengine/taskqueue",
-    srcs = ["google.golang.org/appengine/taskqueue/taskqueue.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/datastore",
-        "//vendor:google.golang.org/appengine/internal/taskqueue",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/urlfetch",
-    srcs = ["google.golang.org/appengine/urlfetch/urlfetch.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/urlfetch",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/user",
-    srcs = [
-        "google.golang.org/appengine/user/oauth.go",
-        "google.golang.org/appengine/user/user.go",
-        "google.golang.org/appengine/user/user_vm.go",
-    ],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:github.com/golang/protobuf/proto",
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/user",
-    ],
-)
-
-go_library(
-    name = "google.golang.org/appengine/xmpp",
-    srcs = ["google.golang.org/appengine/xmpp/xmpp.go"],
-    tags = ["automanaged"],
-    deps = [
-        "//vendor:golang.org/x/net/context",
-        "//vendor:google.golang.org/appengine",
-        "//vendor:google.golang.org/appengine/internal",
-        "//vendor:google.golang.org/appengine/internal/xmpp",
-    ],
-)
-
 filegroup(
     name = "package-srcs",
     srcs = glob(["**"]),
@@ -5465,5 +4904,66 @@ go_library(
         "golang.org/x/text/unicode/cldr/slice.go",
         "golang.org/x/text/unicode/cldr/xml.go",
     ],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/lib/pq",
+    srcs = [
+        "github.com/lib/pq/array.go",
+        "github.com/lib/pq/buf.go",
+        "github.com/lib/pq/conn.go",
+        "github.com/lib/pq/copy.go",
+        "github.com/lib/pq/doc.go",
+        "github.com/lib/pq/encode.go",
+        "github.com/lib/pq/error.go",
+        "github.com/lib/pq/notify.go",
+        "github.com/lib/pq/ssl.go",
+        "github.com/lib/pq/ssl_go1.7.go",
+        "github.com/lib/pq/ssl_permissions.go",
+        "github.com/lib/pq/url.go",
+        "github.com/lib/pq/user_posix.go",
+        "github.com/lib/pq/uuid.go",
+    ],
+    tags = ["automanaged"],
+    deps = ["//vendor:github.com/lib/pq/oid"],
+)
+
+go_library(
+    name = "github.com/lib/pq/hstore",
+    srcs = ["github.com/lib/pq/hstore/hstore.go"],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/lib/pq/listen_example",
+    srcs = ["github.com/lib/pq/listen_example/doc.go"],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/lib/pq/oid",
+    srcs = [
+        "github.com/lib/pq/oid/doc.go",
+        "github.com/lib/pq/oid/types.go",
+    ],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/jmoiron/sqlx",
+    srcs = glob(["github.com/jmoiron/sqlx/*.go"]),
+    deps = ["//vendor:github.com/jmoiron/sqlx/reflectx"],
+)
+
+go_library(
+    name = "github.com/jmoiron/sqlx/reflectx",
+    srcs = ["github.com/jmoiron/sqlx/reflectx/reflect.go"],
+    tags = ["automanaged"],
+)
+
+go_library(
+    name = "github.com/jmoiron/sqlx/types",
+    srcs = ["github.com/jmoiron/sqlx/types/types.go"],
     tags = ["automanaged"],
 )

@@ -53,7 +53,7 @@ func main() {
 		log.Printf("Starting prometheus HTTP Listner on %s", net.JoinHostPort(opts.BindHost, "8081"))
 		err := http.ListenAndServe(net.JoinHostPort(opts.BindHost, "8081"), promhttp.Handler())
 		if err != nil {
-			panic(err)
+			log.Println(err)
 		}
 	}()
 

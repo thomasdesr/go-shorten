@@ -40,16 +40,18 @@ func saveSomething(s storage.NamedStorage) (short string, long string, err error
 // }
 
 var storageSetups = map[string]func(testing.TB) storage.NamedStorage{
-	"Inmem":         setupInmemStorage,
-	"S3Integration": setupS3Storage,
+	"Inmem": setupInmemStorage,
+	"S3":    setupS3Storage,
 	"S3v3Migration": func(t testing.TB) storage.NamedStorage {
 		return &migrations.S3v2MigrationStore{setupS3Storage(t).(*storage.S3)}
 	},
 	"Filesystem": setupFilesystemStorage,
+	"Postgres":   setupPostgresStorage,
 }
 
 var storageCleanup = map[string]func() error{
-	"S3Integration": cleanupS3Storage,
+	"S3":       cleanupS3Storage,
+	"Postgres": cleanupPostgresStorage,
 }
 
 func TestMain(m *testing.M) {
@@ -121,7 +123,7 @@ func TestMissingLoad(t *testing.T) {
 			long, err := setupStorage(t).Load(context.Background(), testCode)
 			t.Logf("[%s] storage.Load(\"%s\") -> %#v, %#v", name, testCode, long, err)
 			assert.NotNil(t, err, name)
-			assert.Equal(t, err, storage.ErrShortNotSet, name)
+			assert.Equal(t, storage.ErrShortNotSet, err, name)
 		})
 	}
 }
@@ -172,17 +174,17 @@ func TestNamedStorageNames(t *testing.T) {
 				return
 			}
 
-			for short, e := range shortNames {
-				t.Logf("[%s] Saving URL '%s' should result in '%s'", storageName, short, e)
+			for short, expectedErr := range shortNames {
+				t.Logf("[%s] Saving URL '%s' should result in '%s'", storageName, short, expectedErr)
 				err := namedStorage.SaveName(context.Background(), short, testURL)
-				assert.Equal(t, err, e, fmt.Sprintf("[%s] Saving URL '%s' should've resulted in '%s'", storageName, short, e))
+				assert.Equal(t, expectedErr, err, fmt.Sprintf("[%s] Saving URL '%s' should've resulted in '%s'", storageName, short, expectedErr))
 
 				if err == nil {
-					t.Logf("[%s] Loading URL '%s' should result in '%s'", storageName, short, e)
+					t.Logf("[%s] Loading URL '%s' should result in '%s'", storageName, short, expectedErr)
 					url, err := namedStorage.Load(context.Background(), short)
-					assert.Equal(t, err, e, fmt.Sprintf("[%s] Loading URL '%s' should've resulted in '%s'", storageName, short, e))
+					assert.Equal(t, expectedErr, err, fmt.Sprintf("[%s] Loading URL '%s' should've resulted in '%s'", storageName, short, expectedErr))
 
-					assert.Equal(t, url, testURL, "Saved URL shoud've matched")
+					assert.Equal(t, testURL, url, "Saved URL shoud've matched")
 				}
 			}
 		})

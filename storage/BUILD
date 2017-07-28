@@ -29,6 +29,7 @@ go_library(
     srcs = [
         "filesystem.go",
         "inmem.go",
+        "postgres.go",
         "regex.go",
         "s3.go",
         "storage.go",
@@ -40,6 +41,8 @@ go_library(
         "//vendor:github.com/aws/aws-sdk-go/aws/awserr",
         "//vendor:github.com/aws/aws-sdk-go/aws/session",
         "//vendor:github.com/aws/aws-sdk-go/service/s3",
+        "//vendor:github.com/jmoiron/sqlx",
+        "//vendor:github.com/lib/pq",
         "//vendor:github.com/pkg/errors",
     ],
 )
@@ -49,6 +52,7 @@ go_test(
     srcs = [
         "filesystem_test.go",
         "inmem_test.go",
+        "postgres_test.go",
         "s3_test.go",
         "storage_test.go",
     ],
@@ -59,6 +63,7 @@ go_test(
         "//vendor:github.com/aws/aws-sdk-go/aws",
         "//vendor:github.com/aws/aws-sdk-go/aws/session",
         "//vendor:github.com/aws/aws-sdk-go/service/s3",
+        "//vendor:github.com/jmoiron/sqlx",
         "//vendor:github.com/pkg/errors",
         "//vendor:github.com/stretchr/testify/assert",
         "//vendor:github.com/stretchr/testify/require",

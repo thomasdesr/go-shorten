@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/google/shlex"
 	flags "github.com/jessevdk/go-flags"
@@ -41,6 +40,10 @@ type Options struct {
 	Multistorage struct {
 		StorageArgs []string `long:"multi-sub-args" env:"MULTI_SUB_ARGS"`
 	} `group:"Multi Storage Options"`
+
+	Postgres struct {
+		ConnectString string `long:"postgres-connect-string" env:"POSTGRES_CONNECT_STRING"`
+	} `group:"Postgres"`
 }
 
 // createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
@@ -97,15 +100,11 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 		}
 
 		return multistorage.Simple(storages...)
+	case "Postgres":
+		log.Printf("Setting up a Postgres backed storage layer")
+
+		return storage.NewPostgres(opts.Postgres.ConnectString)
 	default:
-		validTypes := make([]string, len(storage.SupportedStorageTypes))
-
-		i := 0
-		for k := range storage.SupportedStorageTypes {
-			validTypes[i] = k
-			i++
-		}
-
-		return nil, fmt.Errorf("Unsupported storage-type: '%s', valid ones are: '%v'", opts.StorageType, strings.Join(validTypes, "', '"))
+		return nil, fmt.Errorf("Unsupported storage-type: '%s'", opts.StorageType)
 	}
 }
