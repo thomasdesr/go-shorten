@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "testdata_proto",
+    srcs = ["test.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "testdata_go_proto",
+    importpath = "github.com/matttproud/golang_protobuf_extensions/testdata",
+    proto = ":testdata_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
+    importpath = "github.com/matttproud/golang_protobuf_extensions/testdata",
+    library = ":testdata_go_proto",
+    visibility = ["//visibility:public"],
+)
