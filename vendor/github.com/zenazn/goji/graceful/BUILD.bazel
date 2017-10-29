@@ -1,0 +1,19 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "clone.go",
+        "clone16.go",
+        "einhorn.go",
+        "graceful.go",
+        "middleware.go",
+        "serve.go",
+        "serve13.go",
+        "server.go",
+        "signal.go",
+    ],
+    importpath = "github.com/zenazn/goji/graceful",
+    visibility = ["//visibility:public"],
+    deps = ["//vendor/github.com/zenazn/goji/graceful/listener:go_default_library"],
+)

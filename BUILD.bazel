@@ -1,0 +1,35 @@
+load("@io_bazel_rules_go//go:def.bzl", "gazelle", "go_binary", "go_library")
+
+gazelle(
+    name = "gazelle",
+    external = "vendored",
+    prefix = "github.com/thomaso-mirodin/go-shorten",
+)
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "main.go",
+        "options.go",
+    ],
+    importpath = "github.com/thomaso-mirodin/go-shorten",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//handlers:go_default_library",
+        "//storage:go_default_library",
+        "//storage/multistorage:go_default_library",
+        "//vendor/github.com/codegangsta/negroni:go_default_library",
+        "//vendor/github.com/google/shlex:go_default_library",
+        "//vendor/github.com/jessevdk/go-flags:go_default_library",
+        "//vendor/github.com/julienschmidt/httprouter:go_default_library",
+        "//vendor/github.com/pkg/errors:go_default_library",
+        "//vendor/github.com/prometheus/client_golang/prometheus/promhttp:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "go-shorten",
+    importpath = "github.com/thomaso-mirodin/go-shorten",
+    library = ":go_default_library",
+    visibility = ["//visibility:public"],
+)

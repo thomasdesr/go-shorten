@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "S3v2.go",
+        "S3v3.go",
+    ],
+    importpath = "github.com/thomaso-mirodin/go-shorten/storage/migrations",
+    visibility = ["//visibility:public"],
+    deps = ["//storage:go_default_library"],
+)

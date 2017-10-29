@@ -1,0 +1,11 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "mutil.go",
+        "writer_proxy.go",
+    ],
+    importpath = "github.com/zenazn/goji/web/mutil",
+    visibility = ["//visibility:public"],
+)

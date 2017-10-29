@@ -1,0 +1,38 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "arg.go",
+        "closest.go",
+        "command.go",
+        "completion.go",
+        "convert.go",
+        "error.go",
+        "flags.go",
+        "group.go",
+        "help.go",
+        "ini.go",
+        "man.go",
+        "multitag.go",
+        "option.go",
+        "optstyle_other.go",
+        "parser.go",
+        "termsize.go",
+        "termsize_other.go",
+    ] + select({
+        "@io_bazel_rules_go//go/platform:darwin_amd64": [
+            "termsize_unix.go",
+        ],
+        "@io_bazel_rules_go//go/platform:linux_amd64": [
+            "termsize_linux.go",
+        ],
+        "@io_bazel_rules_go//go/platform:windows_amd64": [
+            "optstyle_windows.go",
+            "termsize_nosysioctl.go",
+        ],
+        "//conditions:default": [],
+    }),
+    importpath = "github.com/jessevdk/go-flags",
+    visibility = ["//visibility:public"],
+)
