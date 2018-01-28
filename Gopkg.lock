@@ -3,8 +3,35 @@
 
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
-  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","internal/shareddefaults","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/sts"]
-  revision = "c51a820979fe0b6688e7e2760efa516b25d6ad4f"
+  packages = [
+    "aws",
+    "aws/awserr",
+    "aws/awsutil",
+    "aws/client",
+    "aws/client/metadata",
+    "aws/corehandlers",
+    "aws/credentials",
+    "aws/credentials/ec2rolecreds",
+    "aws/credentials/endpointcreds",
+    "aws/credentials/stscreds",
+    "aws/defaults",
+    "aws/ec2metadata",
+    "aws/endpoints",
+    "aws/request",
+    "aws/session",
+    "aws/signer/v4",
+    "internal/shareddefaults",
+    "private/protocol",
+    "private/protocol/query",
+    "private/protocol/query/queryutil",
+    "private/protocol/rest",
+    "private/protocol/restxml",
+    "private/protocol/xml/xmlutil",
+    "service/s3",
+    "service/sts"
+  ]
+  revision = "1b176c5c6b57adb03bb982c21930e708ebca5a77"
+  version = "v1.12.70"
 
 [[projects]]
   branch = "master"
@@ -15,23 +42,26 @@
 [[projects]]
   name = "github.com/codegangsta/negroni"
   packages = ["."]
-  revision = "460c5567329bbad8917f126d2b386787f48e343b"
+  revision = "5dbbc83f748fc3ad38585842b0aedab546d0ea1e"
+  version = "v0.3.0"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
-  revision = "782f4967f2dc4564575ca782fe2d04090b5faca8"
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
-  revision = "3d73f4b845efdf9989fffd4b4e562727744a34ba"
-  version = "v1.28.1"
+  revision = "32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a"
+  version = "v1.32.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "6a1fa9404c0aebf36c879bc50152edcc953910d2"
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
 
 [[projects]]
   branch = "master"
@@ -49,44 +79,54 @@
   branch = "master"
   name = "github.com/hashicorp/go-multierror"
   packages = ["."]
-  revision = "83588e72410abfbe4df460eeb6f30841ae47d4c4"
+  revision = "b7773ae218740a7be65057fc60b366a49b538a44"
 
 [[projects]]
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
-  revision = "5695738f733662da3e9afc2283bba6f3c879002d"
+  revision = "96dc06278ce32a0e9d957d590bb987c81ee66407"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
-  revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
-  version = "0.2.2"
-
-[[projects]]
-  name = "github.com/jmoiron/sqlx"
-  packages = [".","reflectx"]
-  revision = "d9bd385d68c068f1fabb5057e3dedcbcbb039d0f"
-
-[[projects]]
-  name = "github.com/julienschmidt/httprouter"
-  packages = ["."]
-  revision = "975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e"
-
-[[projects]]
-  name = "github.com/lib/pq"
-  packages = [".","oid"]
-  revision = "8837942c3e09574accbc5f150e2c5e057189cace"
+  revision = "0b12d6b5"
 
 [[projects]]
   branch = "master"
+  name = "github.com/jmoiron/sqlx"
+  packages = [
+    ".",
+    "reflectx"
+  ]
+  revision = "05cef0741ade10ca668982355b3f3f0bcf0ff0a8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/julienschmidt/httprouter"
+  packages = ["."]
+  revision = "e1b9828bc9e5904baec057a154c09ca40fe7fae0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/lib/pq"
+  packages = [
+    ".",
+    "oid"
+  ]
+  revision = "19c8e9ad00952ce0c64489b60e8df88bb16dd514"
+
+[[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
   packages = ["pbutil"]
-  revision = "c12348ce28de40eed0136aa2b644d0ee0650e56c"
+  revision = "3247c84500bff8d9fb6d579d800f20b3e091582c"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "c605e284fe17294bda444b34710735b29d1a9d90"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -95,34 +135,53 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/prometheus/client_golang"
-  packages = ["prometheus","prometheus/promhttp"]
-  revision = "310ce84375bb84c5cbbf0d05069c92daa5673740"
+  packages = [
+    "prometheus",
+    "prometheus/promhttp"
+  ]
+  revision = "06bc6e01f4baf4ee783ffcd23abfcb0b0f9dfada"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
-  revision = "6f3806018612930941127f2a7c6c453ba2c527d2"
+  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
 
 [[projects]]
+  branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
-  revision = "0866df4b85a18d652b6965be022d007cdf076822"
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
+  revision = "89604d197083d4781071d3c65855d24ecfb0a563"
 
 [[projects]]
+  branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","xfs"]
-  revision = "e645f4e5aaa8506fc71d6edbc5c4ff02c04c46f2"
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
+  revision = "cb4147076ac75738c9a7d279075a253c0cc5acbd"
 
 [[projects]]
   name = "github.com/stretchr/testify"
-  packages = ["assert","require"]
-  revision = "f6abca593680b2315d2075e0f5e2a9751e3f431a"
+  packages = [
+    "assert",
+    "require"
+  ]
+  revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
+  version = "v1.2.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ad4e6723662f20a284c035a3f65f072d45a01edab9fb5aef31ab7ab288a89e0e"
+  inputs-digest = "e66b21eb63fe94706817b86339f79ccc12f4a626d35a718f5a07468eee018e78"
   solver-name = "gps-cdcl"
   solver-version = 1
