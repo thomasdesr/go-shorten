@@ -70,9 +70,11 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 
 		return storage.NewRegexFromList(opts.Regex.Remaps)
 	case "Multistorage":
-		log.Printf("Setting up a Multilayer Storage", opts)
+		log.Printf("Setting up a Multilayer Storage")
 
-		storages := make([]storage.NamedStorage, 0, len(opts.Multistorage.StorageArgs))
+		storageCount := len(opts.Multistorage.StorageArgs)
+		storageNames := make([]string, 0, storageCount)
+		storages := make([]storage.NamedStorage, 0, storageCount)
 		for i, rawArgs := range opts.Multistorage.StorageArgs {
 			subArgs, err := shlex.Split(rawArgs)
 			if err != nil {
@@ -95,9 +97,11 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 				return nil, errors.New("MultiStorage only supports NamedStorage backends")
 			}
 
+			storageNames = append(storageNames, subOpt.StorageType)
 			storages = append(storages, nstore)
 		}
 
+		log.Printf("Multilayer Storage created with children: %v", storageNames)
 		return multistorage.Simple(storages...)
 	case "Postgres":
 		log.Printf("Setting up a Postgres backed storage layer")

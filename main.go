@@ -24,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("Storage created:", opts)
+	log.Println("Storage successfully created")
 
 	n := negroni.New(
 		negroni.NewRecovery(),
