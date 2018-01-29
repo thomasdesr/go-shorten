@@ -40,7 +40,7 @@ func main() {
 		log.Fatal("Failed to create index Page", err)
 	}
 
-	r.Handler("GET", "/healthz", handlers.Healthcheck(store, "/healthz"))
+	r.Handler("GET", "/healthcheck", handlers.Healthcheck(store, "/healthcheck"))
 
 	// Serve the "API"
 	r.HandleMethodNotAllowed = false

@@ -70,8 +70,7 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 
 		return storage.NewRegexFromList(opts.Regex.Remaps)
 	case "Multistorage":
-		log.Printf("Setting up a Multilayer Storage layer with children: %q", opts)
-		log.Println("WARNING: Multilayer currently only works in a READ ONLY mode")
+		log.Printf("Setting up a Multilayer Storage", opts)
 
 		storages := make([]storage.NamedStorage, 0, len(opts.Multistorage.StorageArgs))
 		for i, rawArgs := range opts.Multistorage.StorageArgs {
