@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -14,14 +15,23 @@ type Postgres struct {
 }
 
 func NewPostgres(connectURL string) (*Postgres, error) {
-	db, err := sqlx.Connect("postgres", connectURL)
+	db, err := sqlx.Open("postgres", connectURL)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to connect to DB")
+		return nil, errors.Wrap(err, "failed to create a DB connector")
 	}
 
-	return &Postgres{
-		dbx: db,
-	}, nil
+	// Retry connecting up to 10 times
+	for i := 0; i < 10; i++ {
+		err = db.Ping()
+		if err == nil {
+			return &Postgres{dbx: db}, nil
+		}
+
+		time.Sleep(time.Second)
+	}
+
+	return nil, errors.Wrap(err, "failed to connect to DB")
+
 }
 
 var loadQuery = `
