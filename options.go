@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/google/shlex"
 	flags "github.com/jessevdk/go-flags"
@@ -48,12 +49,12 @@ type Options struct {
 
 // createStorageFromOption takes an Option struct and based on the StorageType field constructs a storage.Storage and returns it.
 func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
-	switch opts.StorageType {
-	case "Inmem":
+	switch strings.ToLower(opts.StorageType) {
+	case "inmem":
 		log.Printf("Setting up an Inmem Storage layer with short code length of '%d'", opts.Inmem.RandLength)
 
 		return storage.NewInmem(opts.Inmem.RandLength)
-	case "S3":
+	case "s3":
 		log.Println("Setting up an S3 Storage layer")
 
 		if len(opts.S3.BucketName) == 0 {
@@ -61,18 +62,25 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 		}
 
 		return storage.NewS3(nil, opts.S3.BucketName)
-	case "Filesystem":
+	case "filesystem":
 		log.Printf("Setting up a Filesystem storage layer with root: %v", opts.Filesystem.RootPath)
 
 		return storage.NewFilesystem(opts.Filesystem.RootPath)
-	case "Regex":
+	case "regex":
 		log.Printf("Setting up a Regex storage with %v remaps", opts.Regex.Remaps)
 
 		return storage.NewRegexFromList(opts.Regex.Remaps)
-	case "Multistorage":
-		log.Printf("Setting up a Multilayer Storage")
+	case "postgres":
+		log.Printf("Setting up a Postgres backed storage layer")
 
+		return storage.NewPostgres(opts.Postgres.ConnectString)
+	case "multistorage":
 		storageCount := len(opts.Multistorage.StorageArgs)
+		if storageCount == 0 {
+			log.Fatal("Multistorage requires at least one child storage")
+		}
+		log.Printf("Setting up a Multilayer Storage with %d children", storageCount)
+
 		storageNames := make([]string, 0, storageCount)
 		storages := make([]storage.NamedStorage, 0, storageCount)
 		for i, rawArgs := range opts.Multistorage.StorageArgs {
@@ -92,21 +100,12 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 				return nil, errors.Wrapf(err, "failed to create storage #%d from args", i)
 			}
 
-			nstore, ok := store.(storage.NamedStorage)
-			if !ok {
-				return nil, errors.New("MultiStorage only supports NamedStorage backends")
-			}
-
 			storageNames = append(storageNames, subOpt.StorageType)
-			storages = append(storages, nstore)
+			storages = append(storages, store)
 		}
 
-		log.Printf("Multilayer Storage created with children: %v", storageNames)
+		log.Printf("Multilayer Storage created with children: %v", strings.Join(storageNames, ", "))
 		return multistorage.Simple(storages...)
-	case "Postgres":
-		log.Printf("Setting up a Postgres backed storage layer")
-
-		return storage.NewPostgres(opts.Postgres.ConnectString)
 	default:
 		return nil, fmt.Errorf("Unsupported storage-type: '%s'", opts.StorageType)
 	}
