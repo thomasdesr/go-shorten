@@ -5,31 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
 	"github.com/thomasdesr/go-shorten/storage"
 )
-
-func getShortFromRequest(r *http.Request) (short string, err error) {
-	if short := r.URL.Path[1:]; len(short) > 0 {
-		return short, nil
-	}
-
-	if short := r.PostFormValue("code"); len(short) > 0 {
-		return short, nil
-	}
-
-	return "", fmt.Errorf("failed to find short in request")
-}
-
-func getURLFromRequest(r *http.Request) (url string, err error) {
-	if url := r.PostFormValue("url"); len(url) > 0 {
-		return url, nil
-	}
-
-	return "", fmt.Errorf("failed to find short in request")
-}
 
 func Healthcheck(store storage.Storage, path string) http.Handler {
 	if s, ok := store.(storage.NamedStorage); ok {
@@ -62,6 +43,9 @@ func GetShort(store storage.Storage, index Index) http.Handler {
 		case nil:
 			http.Redirect(w, r, url, http.StatusFound)
 			return
+		case storage.ErrFuzzyMatchFound:
+			index.Fuzzy = url
+			w.WriteHeader(http.StatusNotFound)
 		case storage.ErrShortNotSet:
 			index.Error = fmt.Errorf("The link you specified does not exist. You can create it below.")
 			w.WriteHeader(http.StatusNotFound)

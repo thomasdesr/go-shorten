@@ -1,0 +1,10 @@
+{{define "search"}}
+    <div class="search-bar">
+        <form id="search-form">
+            <input id="search-term" type="text" value="{{.Short}}" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="search-results"></div>
+    <script src="/js/search.js"></script>
+{{end}}

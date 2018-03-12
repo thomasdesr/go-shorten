@@ -26,10 +26,9 @@ body, input {
 .alert {
 	color: #a94442;
 	background-color: #f2dede;
-	border-color: #ebccd1;
 	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
+	margin-bottom: 25px;
+	border: 1px solid #f05e57;
 	border-radius: 4px;
 
 	float: left;
@@ -65,7 +64,7 @@ button {
 }
 
 .container {
-	padding-top: 7.5rem;
+	padding-top: 2.5rem;
 	margin-bottom: 0;
 	max-width: 80.0rem;
 	margin-left: 0;
@@ -153,4 +152,136 @@ label {
 	#url {
 		padding-left: 4px;
 	}
+}
+
+#did-you-mean {
+	color: rgba(0, 0, 0, 0.6);
+	border: 1px solid #F0C36D;
+	border-radius: 4px;
+	background-color: #F9EDBE;
+	text-align: center;
+	padding: 15px;
+	font-size: 1.6rem;
+
+	display: none;
+}
+
+#did-you-mean a {
+	color: #008CCC;
+}
+#did-you-mean a:hover {
+	color: #606c76;
+}
+
+#did-you-mean.visible {
+	display: block;
+}
+
+#search-button {
+	margin-left: 20px;
+}
+
+.search-container {
+	border: 1px solid lightgray;
+	border-radius: 4px;
+}
+
+#short-search {
+	height: 450px;
+
+	display: none;
+}
+
+#short-search.visible {
+	display: block;
+}
+
+.search-container .search-bar {
+	margin: 8px;
+	height: 38px;
+}
+
+.search-container .search-bar input {
+	width: 25%;
+}
+
+.search-container .search-results {
+	margin: 8px;
+	height: calc(100% - 54px);
+	overflow-y: scroll;
+}
+
+.search-container .search-results a {
+	color: #008CCC;
+}
+.search-container .search-results a:hover {
+	color: #606c76;
+}
+
+.go-dashboard {
+	margin-left: 0;
+	width: 100%;
+}
+
+.go-dashboard .column {
+	height: 620px;
+	border: 1px solid lightgray;
+	border-radius: 4px;
+}
+
+.topbar {
+	background-color: #008CCC;
+	text-align: center;
+	padding: 10px 0;
+	height: 58px;
+	margin: -8px -8px 10px -8px;
+}
+
+#top-n {
+	margin-left: 8px;
+	max-width: 35%;
+}
+
+#top-n a {
+	color: #008CCC;
+}
+#top-n a:hover {
+	color: #606c76;
+}
+
+#top-n h5 {
+	margin-bottom: 0;
+}
+
+#days-nav {
+	margin: 8px;
+}
+
+#days-nav button {
+	background-color: white;
+	color: #008CCC;
+	margin: 0 0 0 -6px;
+	height: 30px;
+	line-height: 10px;
+	padding: 8px;
+	width: 80px;
+	border-radius: 0;
+}
+#days-nav button:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+#days-nav button:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+#days-nav button.selected {
+	background-color: #008CCC;
+	color: white;
+}
+
+.top-n-results table {
+	margin-top: -8px;
+}
+
+.top-n-results tr {
+	line-height: 20px;
 }

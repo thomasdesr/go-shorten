@@ -29,7 +29,7 @@ func NewS3(awsSession *session.Session, bucketName string) (*S3, error) {
 	if awsSession == nil {
 		var err error
 		awsSession, err = session.NewSession(&aws.Config{
-			Region: aws.String("us-west-2"),
+			Region:                        aws.String("us-west-2"),
 			CredentialsChainVerboseErrors: aws.Bool(true),
 		})
 		if err != nil {

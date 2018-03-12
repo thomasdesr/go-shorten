@@ -19,6 +19,17 @@ type NamedStorage interface {
 	SaveName(ctx context.Context, short string, url string) error
 }
 
+type SearchableStorage interface {
+	Storage
+	// SaveName takes a short and a url and saves the name to use for saving a url
+	Search(ctx context.Context, searchTerm string) ([]SearchResult, error)
+}
+
+type TopN interface {
+	Storage
+	TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error)
+}
+
 var (
 	ErrURLEmpty   = errors.New("provided URL is of zero length")
 	ErrShortEmpty = errors.New("provided short name is of zero length")
@@ -26,6 +37,10 @@ var (
 	ErrURLNotAbsolute = errors.New("provided URL is not an absolute URL")
 
 	ErrShortNotSet = errors.New("storage layer doens't have a URL for that short code")
+
+	ErrFuzzyMatchFound = errors.New("fuzzy match found")
+
+	ErrNoResults = errors.New("No search results found")
 )
 
 func validateShort(short string) error {
@@ -58,6 +73,8 @@ var normalizingReplacer = strings.NewReplacer(
 	"-", "",
 	"_", "",
 	"/", "",
+	",", "",
+	".", "",
 )
 
 func sanitizeShort(rawShort string) (string, error) {

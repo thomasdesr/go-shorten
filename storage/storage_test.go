@@ -150,13 +150,13 @@ func TestLoad(t *testing.T) {
 
 func TestNamedStorageNames(t *testing.T) {
 	var shortNames map[string]error = map[string]error{
-		"simple":                               nil,
-		"":                                     storage.ErrShortEmpty,
-		"1;DROP TABLE names":                   nil, // A few SQL Injections
-		"';DROP TABLE names":                   nil,
-		"œ∑´®†¥¨ˆøπ“‘":                         nil, // Fancy Unicode
-		"🇺🇸🇦":                                  nil,
-		"社會科學院語學研究所":                           nil,
+		"simple":             nil,
+		"":                   storage.ErrShortEmpty,
+		"1;DROP TABLE names": nil, // A few SQL Injections
+		"';DROP TABLE names": nil,
+		"œ∑´®†¥¨ˆøπ“‘":       nil, // Fancy Unicode
+		"🇺🇸🇦":                nil,
+		"社會科學院語學研究所":         nil,
 		"ஸ்றீனிவாஸ ராமானுஜன் ஐயங்கார்":         nil,
 		"يَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِي": nil,
 		"Po oživlëGromady strojnye tesnâtsâ ":  nil,

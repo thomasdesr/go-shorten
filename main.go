@@ -10,6 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/thomasdesr/go-shorten/handlers"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 var opts Options
@@ -33,6 +34,7 @@ func main() {
 	)
 
 	r := httprouter.New()
+	r.Handler("GET", "/healthcheck", handlers.Healthcheck(store, "/healthcheck"))
 
 	// Serve the index
 	indexPage, err := handlers.NewIndex("static/templates/index.tmpl")
@@ -40,12 +42,21 @@ func main() {
 		log.Fatal("Failed to create index Page", err)
 	}
 
-	r.Handler("GET", "/healthcheck", handlers.Healthcheck(store, "/healthcheck"))
-
-	// Serve the "API"
+	// If we don't have any matches, serve the respective go link
 	r.HandleMethodNotAllowed = false
 	r.NotFound = handlers.GetShort(store, indexPage)
-	r.Handler("POST", "/", handlers.SetShort(store))
+
+	// Go Endpoints
+	r.Handler("GET", "/go", handlers.ServeGoDashboard())
+
+	// API handlers
+	r.Handler("POST", "/", handlers.SetShort(store)) // TODO(@thomas): move this to a stable API endpoint
+	if ss, ok := store.(storage.SearchableStorage); ok {
+		r.Handler("GET", "/_api/v1/search", handlers.Search(ss))
+	}
+	if tns, ok := store.(storage.TopN); ok {
+		r.Handler("GET", "/_api/v1/top_n", handlers.TopN(tns))
+	}
 
 	n.UseHandler(r)
 
