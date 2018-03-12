@@ -42,6 +42,22 @@ var loadQuery = `
 	 WHERE l.link = $1;
 `
 
+var fuzzyMatchQuery = `
+	WITH top_link AS (
+		SELECT *
+		FROM links l
+		WHERE difference(l.link, $1) > 2
+		AND levenshtein(l.link, $1) < 5
+		ORDER BY levenshtein(l.link, $1)
+		LIMIT 1
+	)
+
+	SELECT  top_link.link
+	FROM urls u
+	JOIN top_link
+	ON top_link.urlID = u.id;
+`
+
 func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 	short, err := sanitizeShort(rawShort)
 	if err != nil {
@@ -51,9 +67,39 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 	var url string
 	switch err := p.dbx.GetContext(ctx, &url, loadQuery, short); err {
 	case nil:
+		// Short found, serve this
 		return url, nil
 	case sql.ErrNoRows:
+		// No short found, try fuzzy matching
+		fuzzyURL, err := p.loadFuzzyMatch(ctx, short)
+
+		// Fatal error
+		if err != nil {
+			return "", err
+		}
+
+		// Fuzzy match found
+		if len(fuzzyURL) > 0 {
+			return fuzzyURL, ErrFuzzyMatchFound
+		}
+
+		// No fuzzy match found
 		return "", ErrShortNotSet
+	default:
+		return "", errors.Wrap(err, "load from DB failed")
+	}
+}
+
+func (p *Postgres) loadFuzzyMatch(ctx context.Context, short string) (string, error) {
+	var url string
+	switch err := p.dbx.GetContext(ctx, &url, fuzzyMatchQuery, short); err {
+	case nil:
+		// Found a fuzzy match
+		return url, nil
+	case sql.ErrNoRows:
+		// Didn't find a good enough match
+		// Serve search page
+		return "", nil
 	default:
 		return "", errors.Wrap(err, "load from DB failed")
 	}

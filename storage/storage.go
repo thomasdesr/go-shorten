@@ -26,6 +26,9 @@ var (
 	ErrURLNotAbsolute = errors.New("provided URL is not an absolute URL")
 
 	ErrShortNotSet = errors.New("storage layer doens't have a URL for that short code")
+
+	ErrFuzzyMatchFound = errors.New("fuzzy match found")
+
 )
 
 func validateShort(short string) error {

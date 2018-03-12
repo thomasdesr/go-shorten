@@ -62,6 +62,9 @@ func GetShort(store storage.Storage, index Index) http.Handler {
 		case nil:
 			http.Redirect(w, r, url, http.StatusFound)
 			return
+		case storage.ErrFuzzyMatchFound:
+			index.Fuzzy = url
+			w.WriteHeader(http.StatusTeapot)
 		case storage.ErrShortNotSet:
 			index.Error = fmt.Errorf("The link you specified does not exist. You can create it below.")
 			w.WriteHeader(http.StatusNotFound)

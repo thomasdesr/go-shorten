@@ -8,6 +8,7 @@ import (
 type Index struct {
 	Short    string
 	Error    error
+	Fuzzy	 string
 	Template *template.Template
 }
 

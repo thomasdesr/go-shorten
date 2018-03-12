@@ -17,6 +17,9 @@
                 <div id="error-message" class="alert alert-danger{{if .Error}} visible{{end}}">
                     {{- if .Error}}{{.Error}}{{end -}}
                 </div>
+                <div id="error-message" class="alert alert-danger{{if .Fuzzy}} visible{{end}}">
+                    {{- if .Fuzzy}}Did you mean <a href="/{{.Fuzzy}}">go/{{.Fuzzy}}</a>?{{end -}}
+                </div>
             </section>
             <section class="container create-short">
                 <form id="shorten-form" action="/" method="POST">
