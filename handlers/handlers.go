@@ -9,28 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
-	"log"
 )
-
-func getShortFromRequest(r *http.Request) (short string, err error) {
-	if short := r.URL.Path[1:]; len(short) > 0 {
-		return short, nil
-	}
-
-	if short := r.PostFormValue("code"); len(short) > 0 {
-		return short, nil
-	}
-
-	return "", fmt.Errorf("failed to find short in request")
-}
-
-func getURLFromRequest(r *http.Request) (url string, err error) {
-	if url := r.PostFormValue("url"); len(url) > 0 {
-		return url, nil
-	}
-
-	return "", fmt.Errorf("failed to find short in request")
-}
 
 func Healthcheck(store storage.Storage, path string) http.Handler {
 	if s, ok := store.(storage.NamedStorage); ok {
@@ -115,22 +94,6 @@ func SetShort(store storage.NamedStorage) http.Handler {
 		default:
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			fmt.Fprintln(w, short)
-		}
-	}))
-}
-
-func Search(store storage.SearchableStorage) http.Handler {
-	return instrumentHandler("search", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		searchQuery := r.URL.Query().Get("s")
-		results, err := store.Search(r.Context(), searchQuery)
-		switch err := errors.Cause(err); err {
-		case nil:
-			json.NewEncoder(w).Encode(results)
-		case storage.ErrNoResults:
-			w.WriteHeader(http.StatusNotFound)
-		default:
-			log.Printf("Error: %s", err)
-			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}))
 }
