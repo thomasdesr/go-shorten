@@ -124,3 +124,62 @@ func (p *Postgres) SaveName(ctx context.Context, rawShort string, url string) er
 
 	return saveLink(ctx, p.dbx, short, url)
 }
+
+var setLimitQuery = `
+	SELECT set_limit(0.2);
+`
+
+var searchQuery = `
+	WITH url_matches AS (
+		SELECT l.link, u.url, similarity(u.url, $1) AS sml
+		FROM urls u
+		JOIN links l
+		ON u.id = l.urlId
+		WHERE u.url % $1
+	),
+	link_matches AS (
+	    SELECT l.link, u.url, similarity(l.link, $1) AS sml 
+		FROM links l
+		JOIN urls u 
+		ON l.urlId = u.id
+		WHERE l.link % $1
+	),
+	union_matches AS (
+	    SELECT *
+		FROM url_matches
+		UNION ALL
+		SELECT * 
+		FROM link_matches
+	)
+
+	SELECT link, url
+	FROM union_matches
+	GROUP BY link, url
+	ORDER BY sum(sml) DESC;
+`
+
+type SearchResult struct {
+	Link string
+	URL string
+}
+
+func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResult, error) {
+	term, err := sanitizeShort(searchTerm)
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := p.dbx.ExecContext(ctx, setLimitQuery); err != nil {
+		return nil, err
+	}
+
+	var results []SearchResult
+	switch err := p.dbx.SelectContext(ctx, &results, searchQuery, term); err {
+	case nil:
+		return results, nil
+	case sql.ErrNoRows:
+		return nil, ErrNoResults
+	default:
+		return nil, errors.Wrap(err, "load from DB failed")
+	}
+}

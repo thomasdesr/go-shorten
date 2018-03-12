@@ -10,6 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
+	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 var opts Options
@@ -46,6 +47,7 @@ func main() {
 	r.HandleMethodNotAllowed = false
 	r.NotFound = handlers.GetShort(store, indexPage)
 	r.Handler("POST", "/", handlers.SetShort(store))
+	r.Handler("GET", "/api/search", handlers.Search(store.(storage.SearchableStorage)))
 
 	n.UseHandler(r)
 

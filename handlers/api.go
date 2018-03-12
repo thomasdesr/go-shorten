@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/thomaso-mirodin/go-shorten/storage"
+	"log"
 )
 
 func getShortFromRequest(r *http.Request) (short string, err error) {
@@ -114,6 +115,22 @@ func SetShort(store storage.NamedStorage) http.Handler {
 		default:
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			fmt.Fprintln(w, short)
+		}
+	}))
+}
+
+func Search(store storage.SearchableStorage) http.Handler {
+	return instrumentHandler("search", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		searchQuery := r.URL.Query().Get("s")
+		results, err := store.Search(r.Context(), searchQuery)
+		switch err := errors.Cause(err); err {
+		case nil:
+			json.NewEncoder(w).Encode(results)
+		case storage.ErrNoResults:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			log.Printf("Error: %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 	}))
 }
