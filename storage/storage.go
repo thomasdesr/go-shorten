@@ -21,8 +21,14 @@ type NamedStorage interface {
 
 type SearchableStorage interface {
 	Storage
-	// SaveName takes a short and a url and saves the name to use for saving a url
+	// Search takes a search term and returns a set of SearchResults of related links
 	Search(ctx context.Context, searchTerm string) ([]SearchResult, error)
+}
+
+type TopN interface {
+	Storage
+	// TopNForPeriod returns an ordered list of TopNResults that containing the link and the number of hits it has had in the last `n` `days`.
+	TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error)
 }
 
 var (

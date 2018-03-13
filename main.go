@@ -47,7 +47,10 @@ func main() {
 	r.NotFound = handlers.GetShort(store, indexPage)
 
 	r.Handler("POST", "/", handlers.SetShort(store)) // TODO(@thomas): move this to a stable API endpoint
-	r.Handler("GET", "/_api/v1/search", handlers.Search(store.(storage.SearchableStorage))) // TODO(@thomas): don't type assert this, its only true is postgres' case)
+
+	// TODO(@thomas): don't type assert the storages, they are only currently true for postgres
+	r.Handler("GET", "/_api/v1/search", handlers.Search(store.(storage.SearchableStorage)))
+	r.Handler("GET", "/_api/v1/top_n", handlers.TopN(store.(storage.TopN)))
 
 	n.UseHandler(r)
 
