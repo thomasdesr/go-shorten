@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+	"log"
 )
 
 type Postgres struct {
@@ -51,12 +52,60 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 	var url string
 	switch err := p.dbx.GetContext(ctx, &url, loadQuery, short); err {
 	case nil:
+		if err := p.accessEvent(ctx, short); err != nil {
+			log.Printf("Error logging access event: %s", err)
+		}
+
 		return url, nil
 	case sql.ErrNoRows:
 		return "", ErrShortNotSet
 	default:
 		return "", errors.Wrap(err, "load from DB failed")
 	}
+}
+
+var accessEventQuery = `
+	INSERT INTO links_usage(linkID, hit_count)
+	SELECT l.id, 1 FROM links l WHERE l.link = $1
+	ON CONFLICT(linkID, day) DO UPDATE SET hit_count = links_usage.hit_count + 1;
+`
+
+func (p *Postgres) accessEvent(ctx context.Context, short string) error {
+	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, short); err != nil {
+		return errors.Wrap(err, "load from DB failed")
+	}
+	return nil
+}
+
+var getTopLinksForPeriodQuery = `
+	SELECT l.link, sum(lu.hit_count) as hitCount
+	FROM links l
+	JOIN links_usage lu
+	ON l.id = lu.linkID
+	WHERE lu.day >= CURRENT_DATE - $2::integer
+	GROUP BY l.id
+	ORDER BY hitCount DESC
+	LIMIT $1;
+`
+
+type TopNResult struct {
+	Link string
+	HitCount int
+}
+
+func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error) {
+	var results []TopNResult
+	if err := p.dbx.SelectContext(
+		ctx,
+		&results,
+		getTopLinksForPeriodQuery,
+		n,
+		days,
+		); err != nil {
+			return nil, err
+	}
+
+	return results, nil
 }
 
 var saveURLQuery = `

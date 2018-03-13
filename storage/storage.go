@@ -19,6 +19,11 @@ type NamedStorage interface {
 	SaveName(ctx context.Context, short string, url string) error
 }
 
+type TopN interface {
+	Storage
+	TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error)
+}
+
 var (
 	ErrURLEmpty   = errors.New("provided URL is of zero length")
 	ErrShortEmpty = errors.New("provided short name is of zero length")
