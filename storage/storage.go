@@ -19,6 +19,12 @@ type NamedStorage interface {
 	SaveName(ctx context.Context, short string, url string) error
 }
 
+type SearchableStorage interface {
+	Storage
+	// SaveName takes a short and a url and saves the name to use for saving a url
+	Search(ctx context.Context, searchTerm string) ([]SearchResult, error)
+}
+
 var (
 	ErrURLEmpty   = errors.New("provided URL is of zero length")
 	ErrShortEmpty = errors.New("provided short name is of zero length")
@@ -29,6 +35,7 @@ var (
 
 	ErrFuzzyMatchFound = errors.New("fuzzy match found")
 
+	ErrNoResults = errors.New("No search results found")
 )
 
 func validateShort(short string) error {

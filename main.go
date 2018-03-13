@@ -10,6 +10,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/thomaso-mirodin/go-shorten/handlers"
+	"github.com/thomaso-mirodin/go-shorten/storage"
 )
 
 var opts Options
@@ -42,10 +43,11 @@ func main() {
 
 	r.Handler("GET", "/healthcheck", handlers.Healthcheck(store, "/healthcheck"))
 
-	// Serve the "API"
 	r.HandleMethodNotAllowed = false
 	r.NotFound = handlers.GetShort(store, indexPage)
-	r.Handler("POST", "/", handlers.SetShort(store))
+
+	r.Handler("POST", "/", handlers.SetShort(store)) // TODO(@thomas): move this to a stable API endpoint
+	r.Handler("GET", "/_api/v1/search", handlers.Search(store.(storage.SearchableStorage))) // TODO(@thomas): don't type assert this, its only true is postgres' case)
 
 	n.UseHandler(r)
 
