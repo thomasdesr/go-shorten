@@ -45,19 +45,12 @@ var loadQuery = `
 `
 
 var fuzzyMatchQuery = `
-	WITH top_link AS (
-		SELECT l.link
-		FROM links l
-		WHERE difference(l.link, $1) > 2
-		AND levenshtein(l.link, $1) < 5
-		ORDER BY levenshtein(l.link, $1)
-		LIMIT 1
-	)
-
 	SELECT l.link
-	FROM urls u
-	JOIN top_link l
-	ON l.urlID = u.id;
+	FROM links l
+	WHERE difference(l.link, $1) > 2
+	AND levenshtein(l.link, $1) < 5
+	ORDER BY levenshtein(l.link, $1)
+	LIMIT 1
 `
 
 func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
@@ -79,14 +72,11 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 	case sql.ErrNoRows:
 		fuzzyMatchedShort, err := p.loadFuzzyMatch(ctx, short)
 		if err != nil {
-			return "", err
+			return fuzzyMatchedShort, err
 		}
 
-		if len(fuzzyMatchedShort) == 0 {
-			// No fuzzy match found
-			return "", ErrShortNotSet
-		}
-		return fuzzyMatchedShort, err
+		// No fuzzy match found
+		return "", ErrShortNotSet
 	default:
 		return "", errors.Wrap(err, "load from DB failed")
 	}
