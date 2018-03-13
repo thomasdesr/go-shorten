@@ -1,7 +1,7 @@
 CREATE TABLE links_usage (
   linkID   INTEGER  NOT NULL,
   day DATE DEFAULT CURRENT_DATE NOT NULL,
-  hit_count INT DEFAULT 0 NOT NULL,
+  hit_count INT DEFAULT 1 NOT NULL,
 
   PRIMARY KEY (linkID, day),
   FOREIGN KEY (linkID) REFERENCES links(id)

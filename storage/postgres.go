@@ -83,8 +83,8 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 }
 
 var accessEventQuery = `
-	INSERT INTO links_usage(linkID, hit_count)
-	SELECT l.id, 1 FROM links l WHERE l.link = $1
+	INSERT INTO links_usage(linkID)
+	SELECT l.id FROM links l WHERE l.link = $1
 	ON CONFLICT(linkID, day) DO UPDATE SET hit_count = links_usage.hit_count + 1;
 `
 
