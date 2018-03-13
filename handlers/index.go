@@ -13,9 +13,10 @@ type Index struct {
 }
 
 var defaultIndexPath = "static/templates/index.tmpl"
+var searchPath = "static/templates/search.tmpl"
 
 func NewIndex(path string) (Index, error) {
-	t, err := template.ParseFiles(path)
+	t, err := template.ParseFiles(path, searchPath)
 	if err != nil {
 		return Index{}, err
 	}

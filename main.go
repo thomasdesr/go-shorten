@@ -44,6 +44,7 @@ func main() {
 	r.Handler("GET", "/healthcheck", handlers.Healthcheck(store, "/healthcheck"))
 
 	r.HandleMethodNotAllowed = false
+	r.Handler("GET", "/go", handlers.ServeGoDashboard())
 	r.NotFound = handlers.GetShort(store, indexPage)
 
 	r.Handler("POST", "/", handlers.SetShort(store)) // TODO(@thomas): move this to a stable API endpoint

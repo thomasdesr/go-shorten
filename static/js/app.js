@@ -15,6 +15,9 @@
     form.addEventListener("submit", handleFormSubmit);
 
     form.addEventListener("keypress", onFormChange);
+
+    var searchButton = document.getElementById('search-button');
+    searchButton.addEventListener('click', showSearchPanel)
   };
 
   /**
@@ -26,6 +29,15 @@
   function onFormChange() {
     document.getElementById('link-container').classList.remove("visible");
   };
+
+  function showSearchPanel() {
+    var shortSearch = document.getElementById('short-search');
+    var classes = shortSearch.classList;
+    if (!classes.contains('visible')) {
+      classes.add("visible");
+      shortSearch.dispatchEvent(new Event('show'));
+    }
+  }
 
   /**
    * Helper for serializing form data.
