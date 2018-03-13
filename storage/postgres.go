@@ -89,6 +89,9 @@ var accessEventQuery = `
 `
 
 func (p *Postgres) accessEvent(ctx context.Context, short string) error {
+	if short == "healthcheck" {
+		return nil
+	}
 	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, short); err != nil {
 		return errors.Wrap(err, "load from DB failed")
 	}
