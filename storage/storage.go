@@ -74,6 +74,8 @@ var normalizingReplacer = strings.NewReplacer(
 	"-", "",
 	"_", "",
 	"/", "",
+	",", "",
+	".", "",
 )
 
 func sanitizeShort(rawShort string) (string, error) {
