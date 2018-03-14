@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"net/http"
 	"html/template"
 	"log"
+	"net/http"
 )
 
-var goDashboardPath = "static/templates/go.tmpl"
+var goDashboardPath = "static/templates/go-dashboard.tmpl"
 
 func ServeGoDashboard() http.Handler {
 	t, err := template.ParseFiles(goDashboardPath, searchPath)
