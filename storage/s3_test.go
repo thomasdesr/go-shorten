@@ -15,6 +15,8 @@ import (
 var testBucket string = "go-shortener-test"
 
 func setupS3Storage(t testing.TB) storage.NamedStorage {
+	t.Skip("Not going to work on CI yet")
+
 	sess, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "failed to create aws session"))
