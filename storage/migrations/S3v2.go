@@ -6,7 +6,7 @@ package migrations
 // 	"sync"
 //
 // 	"github.com/goamz/goamz/s3"
-// 	"github.com/thomaso-mirodin/go-shorten/storage"
+// 	"github.com/thomasdesr/go-shorten/storage"
 // )
 //
 // // This function is designed to assist with migrating an S3 storage with

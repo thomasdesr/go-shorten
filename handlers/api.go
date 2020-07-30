@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
-	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 func getShortFromRequest(r *http.Request) (short string, err error) {

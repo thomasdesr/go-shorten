@@ -5,7 +5,7 @@ import (
 
 	multierror "github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
-	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 // Saver are expected to process a slice of storages and return a result of SaveName(short, url string)

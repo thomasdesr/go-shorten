@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 type saveTestData struct {

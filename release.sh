@@ -10,7 +10,7 @@ for GOOS in linux darwin; do
         TMPDIR="$(mktemp -d)"
 
         cp -r static $TMPDIR
-        go build -o $TMPDIR/go-shorten github.com/thomaso-mirodin/go-shorten
+        go build -o $TMPDIR/go-shorten github.com/thomasdesr/go-shorten
 
         tar -cf go-shorten-$GOOS-$GOARCH.tar \
             -C $TMPDIR \

@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
-	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 var connectString = "postgres://postgres@localhost/?sslmode=disable"

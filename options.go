@@ -8,8 +8,8 @@ import (
 	"github.com/google/shlex"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
-	"github.com/thomaso-mirodin/go-shorten/storage"
-	"github.com/thomaso-mirodin/go-shorten/storage/multistorage"
+	"github.com/thomasdesr/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage/multistorage"
 )
 
 type Options struct {

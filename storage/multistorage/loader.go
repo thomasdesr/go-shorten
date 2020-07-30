@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"github.com/thomaso-mirodin/go-shorten/storage"
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 // Loaders are expected to process the slice of stores and return the result of Load(short) from one of them. Should return ErrEmpty if stores is empty

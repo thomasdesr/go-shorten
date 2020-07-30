@@ -10,7 +10,7 @@ import (
 func TestRegexLoad(t *testing.T) {
 	r, err := NewRegexFromList(map[string]string{
 		`jira/(.+)`:       "https://atlassian.net/browse/$1",
-		`(pull|pr)/(\d+)`: "https://github.com/thomaso-mirodin/go-shorten/pull/$2",
+		`(pull|pr)/(\d+)`: "https://github.com/thomasdesr/go-shorten/pull/$2",
 	})
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "failed to create storage.Regex"))
@@ -22,8 +22,8 @@ func TestRegexLoad(t *testing.T) {
 		err      error
 	}{
 		{in: "jira/ABC-1234", expected: "https://atlassian.net/browse/ABC-1234"},
-		{in: "pull/1234", expected: "https://github.com/thomaso-mirodin/go-shorten/pull/1234"},
-		{in: "pr/1234", expected: "https://github.com/thomaso-mirodin/go-shorten/pull/1234"},
+		{in: "pull/1234", expected: "https://github.com/thomasdesr/go-shorten/pull/1234"},
+		{in: "pr/1234", expected: "https://github.com/thomasdesr/go-shorten/pull/1234"},
 		{in: "pr/", err: ErrShortNotSet},
 		{in: "asdflkj", err: ErrShortNotSet},
 	}

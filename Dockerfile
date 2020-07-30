@@ -1,9 +1,9 @@
-FROM golang:1.9
+FROM golang
 
 EXPOSE 8080
 
-ARG package=github.com/thomaso-mirodin/go-shorten
-# ARG package=app 
+ARG package=github.com/thomasdesr/go-shorten
+# ARG package=app
 # ${PWD#$GOPATH/src/}
 
 RUN mkdir -p /go/src/${package}
