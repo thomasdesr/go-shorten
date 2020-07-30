@@ -9,7 +9,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/thomaso-mirodin/go-shorten/handlers"
+	"github.com/thomasdesr/go-shorten/handlers"
 )
 
 var opts Options
