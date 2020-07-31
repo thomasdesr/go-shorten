@@ -211,29 +211,17 @@ func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResul
 		ORDER BY sum(sml) DESC;
 	`
 
-	term, err := sanitizeShort(searchTerm)
-	if err != nil {
-		return nil, err
-	}
-
 	if _, err := p.dbx.ExecContext(ctx, setLimitQuery); err != nil {
 		return nil, err
 	}
 
 	var results []SearchResult
-	switch err := p.dbx.SelectContext(ctx, &results, searchQuery, term); err {
+	switch err := p.dbx.SelectContext(ctx, &results, searchQuery, searchTerm); err {
 	case nil:
 		return results, nil
-	case sql.ErrNoRows:
-		return nil, ErrNoResults
 	default:
 		return nil, errors.Wrap(err, "load from DB failed")
 	}
-}
-
-type SearchResult struct {
-	Link string
-	URL  string
 }
 
 func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error) {
@@ -260,9 +248,4 @@ func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNRe
 	}
 
 	return results, nil
-}
-
-type TopNResult struct {
-	Link     string
-	HitCount int
 }

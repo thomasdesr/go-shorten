@@ -25,10 +25,20 @@ type SearchableStorage interface {
 	Search(ctx context.Context, searchTerm string) ([]SearchResult, error)
 }
 
+type SearchResult struct {
+	Link string
+	URL  string
+}
+
 type TopN interface {
 	Storage
 	// TopNForPeriod returns the most visited shorts in the last N days
 	TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error)
+}
+
+type TopNResult struct {
+	Link     string
+	HitCount int
 }
 
 var (
@@ -40,8 +50,6 @@ var (
 	ErrShortNotSet = errors.New("storage layer doens't have a URL for that short code")
 
 	ErrFuzzyMatchFound = errors.New("fuzzy match found")
-
-	ErrNoResults = errors.New("No search results found")
 )
 
 func validateShort(short string) error {

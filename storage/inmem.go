@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -12,11 +13,12 @@ import (
 type Inmem struct {
 	RandLength int
 
-	m  map[string]string
-	mu sync.RWMutex
+	m      map[string]string
+	visits map[string]int
+	mu     sync.RWMutex
 }
 
-func (s Inmem) String() string {
+func (s *Inmem) String() string {
 	j := struct {
 		RandLength int
 		InnerMap   map[string]string
@@ -34,7 +36,8 @@ func NewInmem(randLength int) (*Inmem, error) {
 	s := &Inmem{
 		RandLength: randLength,
 
-		m: make(map[string]string),
+		m:      make(map[string]string),
+		visits: make(map[string]int),
 	}
 	return s, nil
 }
@@ -73,11 +76,48 @@ func (s *Inmem) Load(ctx context.Context, rawShort string) (string, error) {
 	}
 
 	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	url, ok := s.m[short]
-	s.mu.Unlock()
 	if !ok {
 		return "", ErrShortNotSet
 	}
 
+	if short != "healthcheck" {
+		s.visits[short]++
+	}
+
 	return url, nil
+}
+
+func (s *Inmem) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var results []TopNResult
+	for short, visits := range s.visits {
+		results = append(results, TopNResult{
+			Link:     short,
+			HitCount: visits,
+		})
+	}
+
+	return results, nil
+}
+
+func (s *Inmem) Search(ctx context.Context, searchTerm string) ([]SearchResult, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	var results []SearchResult
+	for short, url := range s.m {
+		if strings.Contains(short, searchTerm) {
+			results = append(results, SearchResult{
+				Link: short,
+				URL:  url,
+			})
+		}
+	}
+
+	return results, nil
 }

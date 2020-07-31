@@ -20,8 +20,6 @@ func Search(store storage.SearchableStorage) http.Handler {
 			if err != nil {
 				http.Error(w, "Failed to render JSON", http.StatusInternalServerError)
 			}
-		case storage.ErrNoResults:
-			w.WriteHeader(http.StatusNotFound)
 		default:
 			log.Printf("Error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
