@@ -20,7 +20,7 @@
                         {{- if .Error}}{{.Error}}{{end -}}
                     </div>
                     <div id="did-you-mean" class="{{if .Fuzzy}}visible{{end}}">
-                        {{- if .Fuzzy}}We couldn't find that link. Did you mean <a href="/{{.Fuzzy}}">go/{{.Fuzzy}}</a>?{{end -}}
+                        {{- if .Fuzzy}}We couldn't find that link. Did you mean <a href="/{{.Fuzzy}}" autofocus>go/{{.Fuzzy}}</a>?{{end -}}
                     </div>
                 </section>
                 <section class="container create-short">
@@ -39,7 +39,7 @@
                                 <label for="url"><h4>to</h4></label>
                             </div>
                             <div class="column column-50 url-column">
-                                <input id="url" name="url" type="url" class="form-control" placeholder="Enter long url..." required{{if .Short}} autofocus{{end}}>
+                                <input id="url" name="url" type="url" class="form-control" placeholder="Enter long url..." required{{if and .Short (not .Fuzzy)}} autofocus{{end}}>
                             </div>
                             <div class="column column-10 button-column">
                                 <button id="shortenButton" class="large-button" type="submit">Shorten!</button>
