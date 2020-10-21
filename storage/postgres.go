@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"regexp"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -36,15 +37,15 @@ func NewPostgres(connectURL string) (*Postgres, error) {
 }
 
 var loadQuery = `
-	SELECT u.url
+	SELECT regexp_replace($1, l.link, u.url)
 	  FROM urls u
 	  JOIN links l
 		ON l.urlID = u.id
-	 WHERE l.link = $1;
+	 WHERE $1 ~ ('^' || l.link || '$');
 `
 
 func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
-	short, err := sanitizeShort(rawShort)
+	short, err := postgresSanitizeShort(rawShort)
 	if err != nil {
 		return "", err
 	}
@@ -75,7 +76,7 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 func (p *Postgres) accessEvent(ctx context.Context, short string) error {
 	const accessEventQuery = `
 		INSERT INTO links_usage(linkID)
-		SELECT l.id FROM links l WHERE l.link = $1
+		SELECT l.id FROM links l WHERE $1 ~ ('^' || l.link || '$')
 		ON CONFLICT(linkID, day) DO UPDATE SET hit_count = links_usage.hit_count + 1;
 	`
 
@@ -166,7 +167,7 @@ func saveLink(ctx context.Context, dbx *sqlx.DB, short string, url string) error
 }
 
 func (p *Postgres) SaveName(ctx context.Context, rawShort string, url string) error {
-	short, err := sanitizeShort(rawShort)
+	short, err := postgresSanitizeShort(rawShort)
 	if err != nil {
 		return err
 	}
@@ -248,4 +249,12 @@ func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNRe
 	}
 
 	return results, nil
+}
+
+func postgresSanitizeShort(raw string) (string, error) {
+	if _, err := regexp.Compile(raw); err != nil {
+		return "", errors.Wrap(err, "unable to validate regex")
+	}
+
+	return raw, nil
 }
