@@ -50,15 +50,16 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 		return "", err
 	}
 
-	var url string
-	switch err := p.dbx.GetContext(ctx, &url, loadQuery, short); err {
+	var s struct {
+		Url string
+		ID  int
+	}
+	switch err := p.dbx.GetContext(ctx, &s, loadQuery, short); err {
 	case nil:
-		// Short found, serve it
-		if err := p.accessEvent(ctx, short); err != nil {
+		// Short found, log access
+		if err := p.accessEvent(ctx, s.ID); err != nil {
 			log.Printf("Error logging access event: %s", err)
 		}
-
-		return url, nil
 	case sql.ErrNoRows:
 		fuzzyMatchedShort, err := p.loadFuzzyMatch(ctx, short)
 		if err != nil {
@@ -71,19 +72,19 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 	default:
 		return "", errors.Wrap(err, "load from DB failed")
 	}
+
+	return s.Url, nil
 }
 
-func (p *Postgres) accessEvent(ctx context.Context, short string) error {
+func (p *Postgres) accessEvent(ctx context.Context, link_id int) error {
 	const accessEventQuery = `
 		INSERT INTO links_usage(linkID)
-		SELECT l.id FROM links l WHERE $1 ~ ('^' || l.link || '$')
-		ON CONFLICT(linkID, day) DO UPDATE SET hit_count = links_usage.hit_count + 1;
+		SELECT l.id FROM links l WHERE l.id = $1
+		ON CONFLICT(linkID, day) DO UPDATE
+			SET hit_count = links_usage.hit_count + 1;
 	`
 
-	if short == "healthcheck" {
-		return nil
-	}
-	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, short); err != nil {
+	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, link_id); err != nil {
 		return errors.Wrap(err, "load from DB failed")
 	}
 	return nil
