@@ -37,11 +37,15 @@ func NewPostgres(connectURL string) (*Postgres, error) {
 }
 
 var loadQuery = `
-	SELECT regexp_replace($1, l.link, u.url)
-	  FROM urls u
-	  JOIN links l
-		ON l.urlID = u.id
-	 WHERE $1 ~ ('^' || l.link || '$');
+	SELECT
+		regexp_replace($1, l.link, u.url)
+	FROM
+		urls u
+	JOIN
+		links l
+			ON l.urlID = u.id
+	WHERE
+		$1 ~ ('^' || l.link || '$')
 `
 
 func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
@@ -78,10 +82,17 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 
 func (p *Postgres) accessEvent(ctx context.Context, link_id int) error {
 	const accessEventQuery = `
-		INSERT INTO links_usage(linkID)
-		SELECT l.id FROM links l WHERE l.id = $1
-		ON CONFLICT(linkID, day) DO UPDATE
-			SET hit_count = links_usage.hit_count + 1;
+		INSERT INTO
+			links_usage(linkID)
+		SELECT
+			l.id
+		FROM
+			links l
+		WHERE
+			l.id = $1
+		ON CONFLICT(linkID, day)
+			DO UPDATE
+				SET hit_count = links_usage.hit_count + 1;
 	`
 
 	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, link_id); err != nil {
@@ -92,12 +103,15 @@ func (p *Postgres) accessEvent(ctx context.Context, link_id int) error {
 
 func (p *Postgres) loadFuzzyMatch(ctx context.Context, short string) (string, error) {
 	const fuzzyMatchQuery = `
-		SELECT l.link
-		FROM links l
-		WHERE difference(l.link, $1) > 2
-		AND levenshtein(l.link, $1) < 5
+		SELECT
+			l.link
+		FROM
+			links l
+		WHERE
+				difference(l.link, $1) > 2
+			AND levenshtein(l.link, $1) < 5
 		ORDER BY levenshtein(l.link, $1)
-		LIMIT 1
+		LIMIT    1
 	`
 
 	var fuzzyMatchedShort string
@@ -121,12 +135,16 @@ var saveURLQuery = `
 
 var saveLinkQuery = `
 	WITH url_id AS (
-		SELECT id
-		FROM urls
-		WHERE url = :url
+		SELECT
+			id
+		FROM
+			urls
+		WHERE
+			url = :url
 	)
 
-	INSERT INTO links (link, urlID)
+	INSERT INTO
+		links (link, urlID)
 	VALUES
 		(:link, (SELECT id FROM url_id))
 	ON CONFLICT (link)
@@ -181,7 +199,7 @@ func (p *Postgres) SaveName(ctx context.Context, rawShort string, url string) er
 
 func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResult, error) {
 	const setLimitQuery = `
-		SELECT set_limit(0.2);
+		SELECT set_limit(0.2)
 	` // Sets the upper limit for the `%` operator
 
 	const searchQuery = `
@@ -210,7 +228,7 @@ func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResul
 		SELECT link, url
 		FROM union_matches
 		GROUP BY link, url
-		ORDER BY sum(sml) DESC;
+		ORDER BY sum(sml) DESC
 	`
 
 	if _, err := p.dbx.ExecContext(ctx, setLimitQuery); err != nil {
@@ -228,14 +246,22 @@ func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResul
 
 func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNResult, error) {
 	const getTopLinksForPeriodQuery = `
-		SELECT l.link, sum(lu.hit_count) as hitCount
-		FROM links l
-		JOIN links_usage lu
-		ON l.id = lu.linkID
-		WHERE lu.day >= CURRENT_DATE - $2::integer
-		GROUP BY l.id
-		ORDER BY hitCount DESC
-		LIMIT $1;
+		SELECT
+			l.link,
+			sum(lu.hit_count) as hitCount
+		FROM
+			links l
+		JOIN
+			links_usage lu
+				ON l.id = lu.linkID
+		WHERE
+			lu.day >= CURRENT_DATE - $2::integer
+		GROUP BY
+			l.id
+		ORDER BY
+			hitCount DESC
+		LIMIT
+			$1
 	`
 
 	var results []TopNResult
