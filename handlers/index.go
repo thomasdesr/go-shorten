@@ -12,7 +12,6 @@ type Index struct {
 	Template *template.Template
 }
 
-var defaultIndexPath = "static/templates/index.tmpl"
 var searchPath = "static/templates/search.tmpl"
 
 func NewIndex(path string) (Index, error) {

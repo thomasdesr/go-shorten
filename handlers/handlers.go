@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -35,12 +36,35 @@ func GetShort(store storage.Storage, index Index) http.Handler {
 			index.ServeHTTP(w, r)
 			return
 		}
-		index.Short = short
 
-		url, err := store.Load(r.Context(), short)
+		var shortWithoutSuffix string
+		var isInfoRequest = isInfoShort(short)
+
+		if isInfoRequest {
+			shortWithoutSuffix = shortFromInfoShort(short)
+		} else {
+			shortWithoutSuffix = short
+		}
+		index.Short = shortWithoutSuffix
+
+		url, err := store.Load(r.Context(), shortWithoutSuffix)
 		switch err := errors.Cause(err); err {
 		case nil:
-			http.Redirect(w, r, url, http.StatusFound)
+			if isInfoRequest {
+				var shortInfoResult, err = NewShortInfo()
+				if err != nil {
+					log.Println(err)
+					index.Error = errors.Wrap(err, "I got an error :\\")
+					w.WriteHeader(http.StatusInternalServerError)
+				} else {
+					shortInfoResult.Short = shortWithoutSuffix
+					shortInfoResult.Long = url
+					shortInfoResult.ServeShortInfoHTTP(w, r)
+					return
+				}
+			} else {
+				http.Redirect(w, r, url, http.StatusFound)
+			}
 			return
 		case storage.ErrFuzzyMatchFound:
 			index.Fuzzy = url
@@ -55,6 +79,10 @@ func GetShort(store storage.Storage, index Index) http.Handler {
 
 		index.ServeHTTP(w, r)
 	}))
+}
+
+func infoShortResult(short string) {
+
 }
 
 func SetShort(store storage.NamedStorage) http.Handler {
