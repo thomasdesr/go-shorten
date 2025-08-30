@@ -5,12 +5,12 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/codegangsta/negroni"
 	"github.com/jessevdk/go-flags"
 	"github.com/julienschmidt/httprouter"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/thomasdesr/go-shorten/handlers"
 	"github.com/thomasdesr/go-shorten/storage"
+	"github.com/urfave/negroni"
 )
 
 var opts Options
