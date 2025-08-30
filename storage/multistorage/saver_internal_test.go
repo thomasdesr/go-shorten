@@ -2,9 +2,9 @@ package multistorage
 
 import (
 	"context"
+	"errors"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/thomasdesr/go-shorten/storage"
 )
@@ -25,8 +25,8 @@ func (stv saveTestData) testFunc(t *testing.T, testedFunc Saver) {
 	err := testedFunc(context.Background(), stv.inputShort, stv.inputURL, stores)
 	t.Logf("got: (%#v)", err)
 
-	if cause := errors.Cause(err); cause != stv.expectedErr {
-		t.Errorf("unexpected error: expected(%#v) != actual(%#v)", stv.expectedErr, cause)
+	if !errors.Is(err, stv.expectedErr) {
+		t.Errorf("unexpected error: expected(%#v) != actual(%#v)", stv.expectedErr, err)
 	}
 
 	t.Logf("checking equality of stores: %s, %s", stores, stv.expectedStores)

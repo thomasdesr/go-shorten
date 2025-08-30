@@ -2,9 +2,9 @@ package multistorage_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/thomasdesr/go-shorten/storage"
 	"github.com/thomasdesr/go-shorten/storage/multistorage"
 )
@@ -25,7 +25,7 @@ func TestNoBackendsNew(t *testing.T) {
 		[]storage.NamedStorage{},
 	)
 
-	if cause := errors.Cause(err); expectedErr != cause {
+	if !errors.Is(err, expectedErr) {
 		t.Fatal("making the multistorage without any underlying storages should've failed")
 	}
 }

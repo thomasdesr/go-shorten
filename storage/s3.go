@@ -14,7 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/pkg/errors"
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 )
 
 type S3 struct {
@@ -33,7 +33,7 @@ func NewS3(awsSession *session.Session, bucketName string) (*S3, error) {
 			CredentialsChainVerboseErrors: aws.Bool(true),
 		})
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to create AWS session")
+			return nil, errorutil.Wrap(err, "failed to create AWS session")
 		}
 	}
 
@@ -71,7 +71,7 @@ func (s *S3) saveKey(ctx context.Context, short, url string) (err error) {
 		ContentType: aws.String("text/plain"),
 	})
 	if err != nil {
-		return errors.Wrap(err, "failed to save long url to s3")
+		return errorutil.Wrap(err, "failed to save long url to s3")
 	}
 
 	_, err = s.Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
@@ -81,7 +81,7 @@ func (s *S3) saveKey(ctx context.Context, short, url string) (err error) {
 		ContentType: aws.String("text/plain"),
 	})
 	if err != nil {
-		return errors.Wrap(err, "failed to save short url to s3")
+		return errorutil.Wrap(err, "failed to save short url to s3")
 	}
 
 	changeLog, err := json.Marshal(
@@ -94,7 +94,7 @@ func (s *S3) saveKey(ctx context.Context, short, url string) (err error) {
 		},
 	)
 	if err != nil {
-		return errors.Wrap(err, "unable to format change history")
+		return errorutil.Wrap(err, "unable to format change history")
 	}
 
 	_, err = s.Client.PutObjectWithContext(ctx, &s3.PutObjectInput{
@@ -109,7 +109,7 @@ func (s *S3) saveKey(ctx context.Context, short, url string) (err error) {
 		ContentType: aws.String("application/json"),
 	})
 	if err != nil {
-		return errors.Wrap(err, "failed to save changelog to s3")
+		return errorutil.Wrap(err, "failed to save changelog to s3")
 	}
 
 	return nil
@@ -146,7 +146,7 @@ func (s *S3) Load(ctx context.Context, rawShort string) (string, error) {
 
 	var bb bytes.Buffer
 	if _, err := bb.ReadFrom(resp.Body); err != nil {
-		return "", errors.Wrap(err, "failed to read long url")
+		return "", errorutil.Wrap(err, "failed to read long url")
 	}
 
 	return bb.String(), err

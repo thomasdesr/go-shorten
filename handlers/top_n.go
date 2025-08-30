@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
-	"github.com/thomasdesr/go-shorten/storage"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/thomasdesr/go-shorten/storage"
 )
 
 func TopN(store storage.TopN) http.Handler {
@@ -15,15 +15,15 @@ func TopN(store storage.TopN) http.Handler {
 		days, _ := strconv.Atoi(r.URL.Query().Get("days"))
 
 		results, err := store.TopNForPeriod(r.Context(), n, days)
-		switch err := errors.Cause(err); err {
-		case nil:
-			err := json.NewEncoder(w).Encode(results)
-			if err != nil {
-				http.Error(w, "Failed to render JSON", http.StatusInternalServerError)
-			}
-		default:
-			log.Printf("Error: %s", err)
+		if err != nil {
+			log.Printf("TopN error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		err = json.NewEncoder(w).Encode(results)
+		if err != nil {
+			http.Error(w, "Failed to render JSON", http.StatusInternalServerError)
 		}
 	}))
 }

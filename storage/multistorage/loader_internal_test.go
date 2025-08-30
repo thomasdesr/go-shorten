@@ -2,9 +2,9 @@ package multistorage
 
 import (
 	"context"
+	"errors"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/thomasdesr/go-shorten/storage"
 )
 
@@ -81,8 +81,8 @@ func TestLoadFirstFunc(t *testing.T) {
 			t.Logf("querying for %q, expecting (%q,%#v)", tt.inputShort, tt.expectedLong, tt.expectedErr)
 			long, err := loadFirstFunc(context.Background(), tt.inputShort, tt.stores)
 			t.Logf("got: (%q, %#v)", long, err)
-			if cause := errors.Cause(err); cause != tt.expectedErr {
-				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, cause)
+			if !errors.Is(err, tt.expectedErr) {
+				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, err)
 			}
 
 			if long != tt.expectedLong {
@@ -168,8 +168,8 @@ func TestLoadCompareAllResultsFunc(t *testing.T) {
 			t.Logf("querying for %q, expecting (%q,%#v)", tt.inputShort, tt.expectedLong, tt.expectedErr)
 			long, err := loadCompareAllResultsFunc(context.Background(), tt.inputShort, tt.stores)
 			t.Logf("got: (%q, %#v)", long, err)
-			if cause := errors.Cause(err); cause != tt.expectedErr {
-				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, cause)
+			if !errors.Is(err, tt.expectedErr) {
+				t.Errorf("unexpected error: expected(%#v) != actual(%#v)", tt.expectedErr, err)
 			}
 
 			if long != tt.expectedLong {

@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/shlex"
 	flags "github.com/jessevdk/go-flags"
-	"github.com/pkg/errors"
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 	"github.com/thomasdesr/go-shorten/storage"
 	"github.com/thomasdesr/go-shorten/storage/multistorage"
 )
@@ -86,18 +86,18 @@ func createStorageFromOption(opts *Options) (storage.NamedStorage, error) {
 		for i, rawArgs := range opts.Multistorage.StorageArgs {
 			subArgs, err := shlex.Split(rawArgs)
 			if err != nil {
-				return nil, errors.Wrapf(err, "failed to split arguments for argument #%d", i)
+				return nil, errorutil.Wrapf(err, "failed to split arguments for argument #%d", i)
 			}
 
 			var subOpt Options
 			_, err = flags.ParseArgs(&subOpt, subArgs)
 			if err != nil {
-				return nil, errors.Wrapf(err, "failed to cli parse sub argument #%d", i)
+				return nil, errorutil.Wrapf(err, "failed to cli parse sub argument #%d", i)
 			}
 
 			store, err := createStorageFromOption(&subOpt)
 			if err != nil {
-				return nil, errors.Wrapf(err, "failed to create storage #%d from args", i)
+				return nil, errorutil.Wrapf(err, "failed to create storage #%d from args", i)
 			}
 
 			storageNames = append(storageNames, subOpt.StorageType)

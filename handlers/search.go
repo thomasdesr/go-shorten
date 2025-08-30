@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/pkg/errors"
 	"github.com/thomasdesr/go-shorten/storage"
 )
 
@@ -14,15 +13,15 @@ func Search(store storage.SearchableStorage) http.Handler {
 		searchTerm := r.URL.Query().Get("s")
 
 		results, err := store.Search(r.Context(), searchTerm)
-		switch err := errors.Cause(err); err {
-		case nil:
-			err := json.NewEncoder(w).Encode(results)
-			if err != nil {
-				http.Error(w, "Failed to render JSON", http.StatusInternalServerError)
-			}
-		default:
-			log.Printf("Error: %s", err)
+		if err != nil {
+			log.Printf("Search error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		err = json.NewEncoder(w).Encode(results)
+		if err != nil {
+			http.Error(w, "Failed to render JSON", http.StatusInternalServerError)
 		}
 	}))
 }

@@ -4,10 +4,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/pkg/errors"
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 	"github.com/thomasdesr/go-shorten/storage"
 )
 
@@ -38,18 +39,19 @@ func GetShort(store storage.Storage, index Index) http.Handler {
 		index.Short = short
 
 		url, err := store.Load(r.Context(), short)
-		switch err := errors.Cause(err); err {
-		case nil:
+		if err == nil {
 			http.Redirect(w, r, url, http.StatusFound)
 			return
-		case storage.ErrFuzzyMatchFound:
+		}
+
+		if errors.Is(err, storage.ErrFuzzyMatchFound) {
 			index.Fuzzy = url
 			w.WriteHeader(http.StatusNotFound)
-		case storage.ErrShortNotSet:
+		} else if errors.Is(err, storage.ErrShortNotSet) {
 			index.Error = fmt.Errorf("The link you specified does not exist. You can create it below.")
 			w.WriteHeader(http.StatusNotFound)
-		default:
-			index.Error = errors.Wrap(err, "Failed to retrieve link from backend")
+		} else {
+			index.Error = errorutil.Wrap(err, "Failed to retrieve link from backend")
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 

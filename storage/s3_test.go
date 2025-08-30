@@ -7,8 +7,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
+
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 	"github.com/thomasdesr/go-shorten/storage"
 )
 
@@ -19,12 +20,12 @@ func setupS3Storage(t testing.TB) storage.NamedStorage {
 
 	sess, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
 	if err != nil {
-		t.Fatal(errors.Wrap(err, "failed to create aws session"))
+		t.Fatal(errorutil.Wrap(err, "failed to create aws session"))
 	}
 
 	s, err := storage.NewS3(sess, testBucket)
 	if err != nil {
-		t.Fatal(errors.Wrap(err, "failed to create storage.S3"))
+		t.Fatal(errorutil.Wrap(err, "failed to create storage.S3"))
 	}
 
 	return s
@@ -33,12 +34,12 @@ func setupS3Storage(t testing.TB) storage.NamedStorage {
 func cleanupS3Storage() error {
 	sess, err := session.NewSession(&aws.Config{Region: aws.String("us-west-2")})
 	if err != nil {
-		return errors.Wrap(err, "failed to create aws session")
+		return errorutil.Wrap(err, "failed to create aws session")
 	}
 
 	s, err := storage.NewS3(sess, testBucket)
 	if err != nil {
-		return errors.Wrap(err, "failed to create storage.S3")
+		return errorutil.Wrap(err, "failed to create storage.S3")
 	}
 
 	// List all the objects in the test bucket and delete them
@@ -57,13 +58,13 @@ func cleanupS3Storage() error {
 			return true
 		},
 	); err != nil {
-		return errors.Wrap(err, "failed to list and delete objects in bucket")
+		return errorutil.Wrap(err, "failed to list and delete objects in bucket")
 	}
 
 	if _, err := s.Client.DeleteBucket(&s3.DeleteBucketInput{
 		Bucket: aws.String(s.BucketName),
 	}); err != nil {
-		return errors.Wrap(err, "failed to delete bucket")
+		return errorutil.Wrap(err, "failed to delete bucket")
 	}
 
 	return nil

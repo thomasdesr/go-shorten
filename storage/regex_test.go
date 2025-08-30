@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/pkg/errors"
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 )
 
 func TestRegexLoad(t *testing.T) {
@@ -13,7 +13,7 @@ func TestRegexLoad(t *testing.T) {
 		`(pull|pr)/(\d+)`: "https://github.com/thomasdesr/go-shorten/pull/$2",
 	})
 	if err != nil {
-		t.Fatal(errors.Wrap(err, "failed to create storage.Regex"))
+		t.Fatal(errorutil.Wrap(err, "failed to create storage.Regex"))
 	}
 
 	testTable := []struct {

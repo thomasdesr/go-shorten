@@ -9,7 +9,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/pkg/errors"
+	"github.com/thomasdesr/go-shorten/internal/errorutil"
 )
 
 type Postgres struct {
@@ -19,7 +19,7 @@ type Postgres struct {
 func NewPostgres(connectURL string) (*Postgres, error) {
 	db, err := sqlx.Open("postgres", connectURL)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create a DB connector")
+		return nil, errorutil.Wrap(err, "failed to create a DB connector")
 	}
 
 	// Retry connecting up to 10 times
@@ -32,8 +32,7 @@ func NewPostgres(connectURL string) (*Postgres, error) {
 		time.Sleep(time.Second)
 	}
 
-	return nil, errors.Wrap(err, "failed to connect to DB")
-
+	return nil, errorutil.Wrap(err, "failed to connect to DB")
 }
 
 var loadQuery = `
@@ -74,7 +73,7 @@ func (p *Postgres) Load(ctx context.Context, rawShort string) (string, error) {
 		// No fuzzy match found
 		return "", ErrShortNotSet
 	default:
-		return "", errors.Wrap(err, "load from DB failed")
+		return "", errorutil.Wrap(err, "load from DB failed")
 	}
 
 	return s.Url, nil
@@ -96,7 +95,7 @@ func (p *Postgres) accessEvent(ctx context.Context, link_id int) error {
 	`
 
 	if _, err := p.dbx.ExecContext(ctx, accessEventQuery, link_id); err != nil {
-		return errors.Wrap(err, "load from DB failed")
+		return errorutil.Wrap(err, "load from DB failed")
 	}
 	return nil
 }
@@ -123,7 +122,7 @@ func (p *Postgres) loadFuzzyMatch(ctx context.Context, short string) (string, er
 		// Didn't find a good enough match, no answer
 		return "", nil
 	default:
-		return "", errors.Wrap(err, "load from DB for fuzzyMatch failed")
+		return "", errorutil.Wrap(err, "load from DB for fuzzyMatch failed")
 	}
 }
 
@@ -157,7 +156,7 @@ var saveLinkQuery = `
 func saveLink(ctx context.Context, dbx *sqlx.DB, short string, url string) error {
 	tx, err := dbx.BeginTxx(ctx, nil)
 	if err != nil {
-		return errors.Wrap(err, "failed to start transaction")
+		return errorutil.Wrap(err, "failed to start transaction")
 	}
 
 	if _, err := tx.NamedExecContext(
@@ -165,7 +164,7 @@ func saveLink(ctx context.Context, dbx *sqlx.DB, short string, url string) error
 		saveURLQuery,
 		&struct{ URL string }{url},
 	); err != nil {
-		return errors.Wrap(err, "failed to insert url")
+		return errorutil.Wrap(err, "failed to insert url")
 	}
 
 	if _, err := tx.NamedExecContext(ctx,
@@ -175,11 +174,11 @@ func saveLink(ctx context.Context, dbx *sqlx.DB, short string, url string) error
 			URL  string
 		}{short, url},
 	); err != nil {
-		return errors.Wrap(err, "failed to insert short")
+		return errorutil.Wrap(err, "failed to insert short")
 	}
 
 	if err := tx.Commit(); err != nil {
-		return errors.Wrap(err, "SaveName transaction failed")
+		return errorutil.Wrap(err, "SaveName transaction failed")
 	}
 
 	return nil
@@ -240,7 +239,7 @@ func (p *Postgres) Search(ctx context.Context, searchTerm string) ([]SearchResul
 	case nil:
 		return results, nil
 	default:
-		return nil, errors.Wrap(err, "load from DB failed")
+		return nil, errorutil.Wrap(err, "load from DB failed")
 	}
 }
 
@@ -280,7 +279,7 @@ func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNRe
 
 func postgresSanitizeShort(raw string) (string, error) {
 	if _, err := regexp.Compile(raw); err != nil {
-		return "", errors.Wrap(err, "unable to validate regex")
+		return "", errorutil.Wrap(err, "unable to validate regex")
 	}
 
 	return raw, nil
