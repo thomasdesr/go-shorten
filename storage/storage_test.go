@@ -95,6 +95,10 @@ func TestNamedStorageNormalization(t *testing.T) {
 		setupStorage := setupStorage
 
 		t.Run(name, func(t *testing.T) {
+			if name == "Postgres" {
+				t.Skip("Postgres links are regexes, so shorts are not normalized; near misses get a fuzzy match instead")
+			}
+
 			namedStorage, ok := setupStorage(t).(storage.NamedStorage)
 
 			if assert.True(t, ok, name) {

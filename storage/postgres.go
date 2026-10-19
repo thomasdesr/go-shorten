@@ -277,7 +277,12 @@ func (p *Postgres) TopNForPeriod(ctx context.Context, n int, days int) ([]TopNRe
 	return results, nil
 }
 
+// postgresSanitizeShort leaves shorts unnormalized because Postgres links are regexes:
+// stripping or lowercasing characters would change what a pattern like `pr/(\d+)` matches.
 func postgresSanitizeShort(raw string) (string, error) {
+	if err := validateShort(raw); err != nil {
+		return "", err
+	}
 	if _, err := regexp.Compile(raw); err != nil {
 		return "", errorutil.Wrap(err, "unable to validate regex")
 	}
