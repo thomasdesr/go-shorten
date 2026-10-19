@@ -37,7 +37,7 @@ func NewPostgres(connectURL string) (*Postgres, error) {
 
 var loadQuery = `
 	SELECT
-		u.id, regexp_replace($1, l.link, u.url) AS url
+		l.id, regexp_replace($1, l.link, u.url) AS url
 	FROM
 		urls u
 	JOIN
