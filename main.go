@@ -59,8 +59,8 @@ func main() {
 	n.UseHandler(mux)
 
 	go func() {
-		log.Printf("Starting prometheus HTTP Listner on %s", net.JoinHostPort(opts.BindHost, "8081"))
-		err := http.ListenAndServe(net.JoinHostPort(opts.BindHost, "8081"), promhttp.Handler())
+		log.Printf("Starting prometheus HTTP Listner on %s", net.JoinHostPort(opts.BindHost, opts.MetricsPort))
+		err := http.ListenAndServe(net.JoinHostPort(opts.BindHost, opts.MetricsPort), promhttp.Handler())
 		if err != nil {
 			log.Println(err)
 		}

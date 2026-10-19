@@ -16,6 +16,8 @@ type Options struct {
 	BindHost string `long:"host"    default:"0.0.0.0"   env:"HOST"`
 	BindPort string `long:"port"    default:"8080"      env:"PORT"`
 
+	MetricsPort string `long:"metrics-port" default:"8081" env:"METRICS_PORT"`
+
 	StorageType string `long:"storage-type" default:"Inmem" ini-name:"storage_type" env:"STORAGE_TYPE"`
 	// StorageConfig string `long:"storage-config" ini-name:"storage_config"`
 
